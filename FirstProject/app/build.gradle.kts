@@ -86,4 +86,16 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    //Coil
+    implementation(libs.coil)
+
+    //Material
+    implementation(libs.material.v1120)
+
+    //ViewPager2
+    implementation(libs.androidx.viewpager2)
+
+
+
 }
