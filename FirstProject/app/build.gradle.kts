@@ -6,7 +6,6 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
-    id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
 }
 
 val localProperties = Properties()
@@ -56,15 +55,8 @@ android {
     }
 }
 
-ktlint {
-    android.set(true)
-    ignoreFailures.set(false)
-    disabledRules.set(setOf("final-newline", "no-wildcard-imports", "max-line-length"))
-    reporters {
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.HTML)
-    }
-}
+
+
 
 dependencies {
 

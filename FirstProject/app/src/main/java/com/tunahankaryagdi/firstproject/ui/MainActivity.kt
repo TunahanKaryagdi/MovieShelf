@@ -5,7 +5,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.tunahankaryagdi.firstproject.BuildConfig
 import com.tunahankaryagdi.firstproject.R
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,17 +19,5 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        var firstValue = 1
-        var secondValue = 1
-
-        while (firstValue < 100) {
-            println(firstValue)
-            val temp = firstValue
-            firstValue = secondValue
-            secondValue += temp
-        }
-
-        println("${BuildConfig.API_KEY}")
     }
 }
