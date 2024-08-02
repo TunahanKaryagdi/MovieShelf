@@ -2,7 +2,9 @@ package com.tunahankaryagdi.firstproject.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tunahankaryagdi.firstproject.data.repository.MovieRepository
+import com.tunahankaryagdi.firstproject.data.model.dto.toPopularMovie
+import com.tunahankaryagdi.firstproject.data.repository.MovieRepositoryImpl
+import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: MovieRepository,
+    private val repository: MovieRepositoryImpl,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -41,7 +43,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val response = repository.getPopularMovies()
                 val movies = response.results.map {
-                    it.backdrop_path
+                    it.toPopularMovie()
                 }
                 _uiState.update { current ->
                     current.copy(
@@ -60,7 +62,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val response = repository.getPopularMovies()
                 val movies = response.results.map {
-                    it.backdrop_path
+                    it.toPopularMovie()
                 }
                 _uiState.update { current ->
                     current.copy(
@@ -88,6 +90,6 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val isLoading: Boolean = false,
     val selectedTab: HomeTab = HomeTab.NOW_PLAYING,
-    val popularMovies: List<String> = emptyList(),
-    val movies: List<String> = emptyList(),
+    val popularMovies: List<PopularMovie> = emptyList(),
+    val movies: List<PopularMovie> = emptyList(),
 )

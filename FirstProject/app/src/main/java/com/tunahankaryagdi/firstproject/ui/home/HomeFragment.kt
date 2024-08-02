@@ -14,6 +14,7 @@ import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -31,6 +32,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
         return binding.root
+
     }
 
     override fun onViewCreated(
@@ -40,9 +42,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         observeUiState()
         setAdapters()
-
-
-
 
     }
 
@@ -88,7 +87,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     homeMovieListAdapter.updateMovies(state.movies)
                 }
             }
-
         }
+
     }
 }
