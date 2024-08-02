@@ -7,9 +7,7 @@ import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemPopularMoviesBinding
 
-class HomePopularMoviesAdapter(
-    viewPager2: ViewPager2
-) :
+class HomePopularMoviesAdapter() :
     RecyclerView.Adapter<HomePopularMoviesAdapter.HomePopularMoviesViewHolder>() {
 
     private var movies: List<String> = emptyList()

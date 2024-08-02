@@ -6,11 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemMovieListBinding
 
-class HomeMovieListAdapter() :
-    RecyclerView.Adapter<HomeMovieListAdapter.HomeMovieListViewHolder>() {
-
+class HomeMovieListAdapter(
     private var movies: List<String> = emptyList()
-
+) :
+    RecyclerView.Adapter<HomeMovieListAdapter.HomeMovieListViewHolder>() {
 
     class HomeMovieListViewHolder(internal val binding: ItemMovieListBinding) :
         RecyclerView.ViewHolder(binding.root)
