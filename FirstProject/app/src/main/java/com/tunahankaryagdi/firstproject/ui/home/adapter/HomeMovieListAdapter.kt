@@ -2,15 +2,15 @@ package com.tunahankaryagdi.firstproject.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemMovieListBinding
 import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
 
-class HomeMovieListAdapter(
-    private var movies: List<PopularMovie> = emptyList()
-) :
-    RecyclerView.Adapter<HomeMovieListAdapter.HomeMovieListViewHolder>() {
+class HomeMovieListAdapter() :
+    PagingDataAdapter<PopularMovie, HomeMovieListAdapter.HomeMovieListViewHolder>(MovieDiffCallback()) {
 
     class HomeMovieListViewHolder(internal val binding: ItemMovieListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -21,16 +21,21 @@ class HomeMovieListAdapter(
         return HomeMovieListViewHolder(binding)
     }
 
-    override fun getItemCount() = movies.size
 
     override fun onBindViewHolder(holder: HomeMovieListViewHolder, position: Int) {
-        val movie = movies[position]
+        val movie = getItem(position) ?: return
         holder.binding.ivMovie.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
     }
 
-    fun updateMovies(newItems: List<PopularMovie>) {
-        movies = newItems
-        notifyDataSetChanged()
+
+    class MovieDiffCallback : DiffUtil.ItemCallback<PopularMovie>() {
+        override fun areItemsTheSame(oldItem: PopularMovie, newItem: PopularMovie): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: PopularMovie, newItem: PopularMovie): Boolean {
+            return oldItem == newItem
+        }
     }
 
 }

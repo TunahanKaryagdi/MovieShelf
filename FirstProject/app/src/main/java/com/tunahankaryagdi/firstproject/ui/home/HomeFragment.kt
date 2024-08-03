@@ -14,7 +14,6 @@ import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -40,15 +39,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        observeUiState()
         setAdapters()
+        observeUiState()
 
     }
 
 
     private fun setAdapters() {
 
-        homeMovieListAdapter = HomeMovieListAdapter(movies = viewModel.uiState.value.popularMovies)
+        homeMovieListAdapter = HomeMovieListAdapter()
         homePopularMoviesAdapter = HomePopularMoviesAdapter()
 
         with(binding.vpPopularMovies) {
@@ -83,9 +82,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 if (state.popularMovies.isNotEmpty()) {
                     homePopularMoviesAdapter.updateMovies(state.popularMovies)
                 }
-                if (state.movies.isNotEmpty()) {
-                    homeMovieListAdapter.updateMovies(state.movies)
-                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                homeMovieListAdapter.submitData(state.movies)
             }
         }
 

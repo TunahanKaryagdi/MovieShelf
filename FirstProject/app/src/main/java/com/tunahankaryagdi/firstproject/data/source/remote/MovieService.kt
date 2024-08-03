@@ -8,3 +8,4 @@ interface MovieService {
     @GET("movie/popular")
     suspend fun getPopularMovies(@Query("page") page: Int = 1): PopularMoviesResponse
 }
+

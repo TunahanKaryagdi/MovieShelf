@@ -15,6 +15,7 @@ constraintlayout = "2.1.4"
 materialVersion = "1.12.0"
 navigationFragmentKtx = "2.7.7"
 navigationUiKtx = "2.7.7"
+pagingRuntimeKtx = "3.3.1"
 retrofit = "2.9.0"
 roomKtx = "2.6.1"
 roomRuntime = "2.6.1"
@@ -24,6 +25,7 @@ viewpager2 = "1.1.0"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationUiKtx" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
