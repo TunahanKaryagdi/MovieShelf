@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
@@ -41,7 +43,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         setAdapters()
         observeUiState()
+        changeRecyclerLayout()
 
+    }
+
+    private fun changeRecyclerLayout() {
+        with(binding){
+            btn1x.setOnClickListener {
+                rvMovies.layoutManager = LinearLayoutManager(requireContext())
+            }
+            btn2x.setOnClickListener {
+                rvMovies.layoutManager = GridLayoutManager(requireContext(),2)
+            }
+            btn3x.setOnClickListener {
+                rvMovies.layoutManager = GridLayoutManager(requireContext(),3)
+            }
+        }
     }
 
 
