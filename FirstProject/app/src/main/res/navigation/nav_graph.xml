@@ -15,5 +15,9 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.tunahankaryagdi.firstproject.ui.detail.DetailFragment"
-        android:label="DetailFragment" />
+        android:label="DetailFragment" >
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

@@ -45,20 +45,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setAdapters()
         observeUiState()
         changeRecyclerLayout()
-        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDetailFragment())
-
     }
 
     private fun changeRecyclerLayout() {
-        with(binding){
+        with(binding) {
             btn1x.setOnClickListener {
                 rvMovies.layoutManager = LinearLayoutManager(requireContext())
             }
             btn2x.setOnClickListener {
-                rvMovies.layoutManager = GridLayoutManager(requireContext(),2)
+                rvMovies.layoutManager = GridLayoutManager(requireContext(), 2)
             }
             btn3x.setOnClickListener {
-                rvMovies.layoutManager = GridLayoutManager(requireContext(),3)
+                rvMovies.layoutManager = GridLayoutManager(requireContext(), 3)
             }
         }
     }
@@ -66,15 +64,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun setAdapters() {
 
-        homeMovieListAdapter = HomeMovieListAdapter()
+        homeMovieListAdapter = HomeMovieListAdapter(
+            onClickMovie = { movieId ->
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId))
+            }
+        )
         homePopularMoviesAdapter = HomePopularMoviesAdapter()
+
+        binding.rvMovies.adapter = homeMovieListAdapter
+
 
         with(binding.vpPopularMovies) {
             adapter = homePopularMoviesAdapter
             offscreenPageLimit = 3
         }
 
-        binding.rvMovies.adapter = homeMovieListAdapter
 
         HomeTab.entries.forEach { homeTab ->
             binding.tlTabs.addTab(binding.tlTabs.newTab().setText(homeTab.resId))

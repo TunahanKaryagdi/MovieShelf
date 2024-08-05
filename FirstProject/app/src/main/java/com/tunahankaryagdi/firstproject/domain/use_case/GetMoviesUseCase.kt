@@ -3,7 +3,6 @@ package com.tunahankaryagdi.firstproject.domain.use_case
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.tunahankaryagdi.firstproject.data.model.dto.PopularMovieDto
 import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow

@@ -9,7 +9,9 @@ import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemMovieListBinding
 import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
 
-class HomeMovieListAdapter() :
+class HomeMovieListAdapter(
+    val onClickMovie: (Int) -> Unit
+) :
     PagingDataAdapter<PopularMovie, HomeMovieListAdapter.HomeMovieListViewHolder>(MovieDiffCallback()) {
 
     class HomeMovieListViewHolder(internal val binding: ItemMovieListBinding) :
@@ -25,6 +27,9 @@ class HomeMovieListAdapter() :
     override fun onBindViewHolder(holder: HomeMovieListViewHolder, position: Int) {
         val movie = getItem(position) ?: return
         holder.binding.ivMovie.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
+        holder.binding.llMovieListItem.setOnClickListener {
+            onClickMovie(movie.id)
+        }
     }
 
 
