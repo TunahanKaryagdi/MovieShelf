@@ -3,15 +3,14 @@ package com.tunahankaryagdi.firstproject.ui.home.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemPopularMoviesBinding
-import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
+import com.tunahankaryagdi.firstproject.domain.model.Movie
 
 class HomePopularMoviesAdapter() :
     RecyclerView.Adapter<HomePopularMoviesAdapter.HomePopularMoviesViewHolder>() {
 
-    private var movies: List<PopularMovie> = emptyList()
+    private var movies: List<Movie> = emptyList()
 
 
     class HomePopularMoviesViewHolder(internal val binding: ItemPopularMoviesBinding) :
@@ -30,7 +29,7 @@ class HomePopularMoviesAdapter() :
         holder.binding.ivPopularMovie.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
     }
 
-    fun updateMovies(newItems: List<PopularMovie>) {
+    fun updateMovies(newItems: List<Movie>) {
         movies = newItems
         notifyDataSetChanged()
     }

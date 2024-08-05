@@ -3,8 +3,8 @@ package com.tunahankaryagdi.firstproject.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.tunahankaryagdi.firstproject.data.model.dto.toPopularMovie
-import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
+import com.tunahankaryagdi.firstproject.data.model.dto.toMovie
+import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
 import com.tunahankaryagdi.firstproject.domain.use_case.GetMoviesUseCase
 import com.tunahankaryagdi.firstproject.utils.HomeTab
@@ -46,7 +46,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val response = repository.getPopularMovies()
                 val movies = response.results.map {
-                    it.toPopularMovie()
+                    it.toMovie()
                 }
                 _uiState.update { current ->
                     current.copy(
@@ -63,8 +63,8 @@ class HomeViewModel @Inject constructor(
     private fun getNowPlayingMovies() {
         viewModelScope.launch {
             try {
-                getMoviesUseCase.invoke().collect { pagingData->
-                    _uiState.update { current->
+                getMoviesUseCase.invoke().collect { pagingData ->
+                    _uiState.update { current ->
                         current.copy(
                             movies = pagingData
                         )
@@ -91,6 +91,6 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val isLoading: Boolean = false,
     val selectedTab: HomeTab = HomeTab.NOW_PLAYING,
-    val popularMovies: List<PopularMovie> = emptyList(),
-    val movies: PagingData<PopularMovie> = PagingData.empty()
+    val popularMovies: List<Movie> = emptyList(),
+    val movies: PagingData<Movie> = PagingData.empty()
 )

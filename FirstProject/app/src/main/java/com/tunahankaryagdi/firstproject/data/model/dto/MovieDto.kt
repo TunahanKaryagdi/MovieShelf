@@ -1,9 +1,9 @@
 package com.tunahankaryagdi.firstproject.data.model.dto
 
 import com.google.gson.annotations.SerializedName
-import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
+import com.tunahankaryagdi.firstproject.domain.model.Movie
 
-data class PopularMovieDto(
+data class MovieDto(
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String,
@@ -29,8 +29,8 @@ data class PopularMovieDto(
 )
 
 
-fun PopularMovieDto.toPopularMovie(): PopularMovie {
-    return PopularMovie(
+fun MovieDto.toMovie(): Movie {
+    return Movie(
         id = id,
         title = title,
         backdropPath = backdropPath

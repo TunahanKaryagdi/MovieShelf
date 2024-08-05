@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemMovieListBinding
-import com.tunahankaryagdi.firstproject.domain.model.PopularMovie
+import com.tunahankaryagdi.firstproject.domain.model.Movie
 
 class HomeMovieListAdapter(
     val onClickMovie: (Int) -> Unit
 ) :
-    PagingDataAdapter<PopularMovie, HomeMovieListAdapter.HomeMovieListViewHolder>(MovieDiffCallback()) {
+    PagingDataAdapter<Movie, HomeMovieListAdapter.HomeMovieListViewHolder>(MovieDiffCallback()) {
 
     class HomeMovieListViewHolder(internal val binding: ItemMovieListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -33,12 +33,12 @@ class HomeMovieListAdapter(
     }
 
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<PopularMovie>() {
-        override fun areItemsTheSame(oldItem: PopularMovie, newItem: PopularMovie): Boolean {
+    class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: PopularMovie, newItem: PopularMovie): Boolean {
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem == newItem
         }
     }
