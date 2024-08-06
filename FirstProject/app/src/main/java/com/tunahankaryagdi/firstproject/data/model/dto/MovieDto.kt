@@ -6,7 +6,7 @@ import com.tunahankaryagdi.firstproject.domain.model.Movie
 data class MovieDto(
     val adult: Boolean,
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String?,
     @SerializedName("genre_ids")
     val genreIds: List<Int>,
     val id: Int,

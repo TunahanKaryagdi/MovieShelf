@@ -34,7 +34,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
         return binding.root
-
     }
 
     override fun onViewCreated(
@@ -45,6 +44,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setAdapters()
         observeUiState()
         changeRecyclerLayout()
+
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
     }
 
     private fun changeRecyclerLayout() {

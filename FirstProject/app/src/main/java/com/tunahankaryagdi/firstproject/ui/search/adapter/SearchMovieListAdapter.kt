@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemSearchListBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 
 class SearchMovieListAdapter(
     val onClickMovie: (Int) -> Unit
-) :
-    PagingDataAdapter<Movie, SearchMovieListAdapter.SearchMovieListViewHolder>(MovieDiffCallback()) {
+) : PagingDataAdapter<Movie, SearchMovieListAdapter.SearchMovieListViewHolder>(MovieDiffCallback()) {
 
     class SearchMovieListViewHolder(internal val binding: ItemSearchListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -25,7 +25,10 @@ class SearchMovieListAdapter(
 
     override fun onBindViewHolder(holder: SearchMovieListViewHolder, position: Int) {
         val movie = getItem(position) ?: return
-
+        with(holder.binding){
+            ivSearchItemImage.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
+            tvSearchItemTitle.text = movie.title
+        }
     }
 
 
