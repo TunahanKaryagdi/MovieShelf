@@ -3,6 +3,7 @@ package com.tunahankaryagdi.firstproject.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.tunahankaryagdi.firstproject.data.model.dto.toMovie
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
@@ -63,7 +64,7 @@ class HomeViewModel @Inject constructor(
     private fun getNowPlayingMovies() {
         viewModelScope.launch {
             try {
-                getMoviesUseCase.invoke().collect { pagingData ->
+                getMoviesUseCase.invoke().cachedIn(viewModelScope).collect { pagingData ->
                     _uiState.update { current ->
                         current.copy(
                             movies = pagingData

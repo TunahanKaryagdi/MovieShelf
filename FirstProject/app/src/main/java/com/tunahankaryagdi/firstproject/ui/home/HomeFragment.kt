@@ -45,7 +45,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeUiState()
         changeRecyclerLayout()
 
-        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
     }
 
     private fun changeRecyclerLayout() {

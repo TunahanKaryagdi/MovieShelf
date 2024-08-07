@@ -6,6 +6,8 @@ import com.tunahankaryagdi.firstproject.data.model.PopularMoviesResponse
 import com.tunahankaryagdi.firstproject.data.model.TopRatedResponse
 import com.tunahankaryagdi.firstproject.data.model.UpcomingResponse
 import com.tunahankaryagdi.firstproject.data.model.dto.MovieDetailDto
+import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
+import com.tunahankaryagdi.firstproject.data.source.local.MovieDao
 import com.tunahankaryagdi.firstproject.data.source.remote.MovieService
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
@@ -13,6 +15,7 @@ import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
     private val movieService: MovieService,
+    private val movieDao: MovieDao
 ) : MovieRepository {
 
     override suspend fun getPopularMovies(page: Int): PopularMoviesResponse {
@@ -33,6 +36,14 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getDetailByMovieId(movieId: Int): MovieDetailDto {
         return movieService.getDetailByMovieId(movieId)
+    }
+
+    override suspend fun addToFavorites(movieEntity: MovieEntity) {
+        return movieDao.insert(movieEntity)
+    }
+
+    override suspend fun getAllFavorites(): List<MovieEntity> {
+        return movieDao.getAll()
     }
 
     override fun getPagingSource(): PagingSource<Int, Movie> {

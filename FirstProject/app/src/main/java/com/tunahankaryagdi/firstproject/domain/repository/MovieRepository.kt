@@ -6,6 +6,7 @@ import com.tunahankaryagdi.firstproject.data.model.PopularMoviesResponse
 import com.tunahankaryagdi.firstproject.data.model.TopRatedResponse
 import com.tunahankaryagdi.firstproject.data.model.UpcomingResponse
 import com.tunahankaryagdi.firstproject.data.model.dto.MovieDetailDto
+import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,6 +17,8 @@ interface MovieRepository {
     suspend fun getTopRatedMovies(page: Int = 1): TopRatedResponse
     suspend fun getUpcomingMovies(page: Int = 1): UpcomingResponse
     suspend fun getDetailByMovieId(movieId: Int): MovieDetailDto
+    suspend fun addToFavorites(movieEntity: MovieEntity)
+    suspend fun getAllFavorites(): List<MovieEntity>
     fun getPagingSource(): PagingSource<Int, Movie>
 }
 

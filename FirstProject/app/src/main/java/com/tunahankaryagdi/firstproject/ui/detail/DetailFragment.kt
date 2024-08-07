@@ -53,6 +53,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             tvYear.text = movieDetail.releaseDate
             ivPoster.load("https://image.tmdb.org/t/p/original/${movieDetail.backdropPath}")
             ivMovieDetail.load("https://image.tmdb.org/t/p/original/${movieDetail.posterPath}")
+            ivSave.setOnClickListener {
+                viewModel.addToFavorites(movieDetail)
+            }
         }
     }
 }
