@@ -58,9 +58,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         )
         with(binding) {
             rvSearchList.adapter = searchMovieListAdapter
-//            btnSearch.setOnClickListener {
-//                viewModel.getMoviesBySearch(etSearchText.text.toString())
-//            }
             etSearchText.addTextChangedListener { text ->
                 viewModel.getMoviesBySearch(text.toString())
             }

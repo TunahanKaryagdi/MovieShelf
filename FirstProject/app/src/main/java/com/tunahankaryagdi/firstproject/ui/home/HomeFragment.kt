@@ -44,7 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setAdapters()
         observeUiState()
         changeRecyclerLayout()
-
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFavoriteFragment())
     }
 
     private fun changeRecyclerLayout() {
