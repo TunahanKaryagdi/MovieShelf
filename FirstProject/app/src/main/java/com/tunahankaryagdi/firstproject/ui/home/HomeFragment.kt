@@ -17,6 +17,7 @@ import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -44,7 +45,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setAdapters()
         observeUiState()
         changeRecyclerLayout()
-        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFavoriteFragment())
     }
 
     private fun changeRecyclerLayout() {
@@ -102,14 +102,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                if (state.popularMovies.isNotEmpty()) {
-                    homePopularMoviesAdapter.updateMovies(state.popularMovies)
-                }
+                homePopularMoviesAdapter.updateMovies(state.popularMovies)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
+            viewModel.uiState.collectLatest { state ->
                 homeMovieListAdapter.submitData(state.movies)
             }
         }

@@ -5,15 +5,25 @@ import androidx.paging.PagingState
 import com.tunahankaryagdi.firstproject.data.model.dto.toMovie
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
+import com.tunahankaryagdi.firstproject.utils.MovieType
 import javax.inject.Inject
 
-class MoviePagingSource @Inject constructor(private val movieRepository: MovieRepository) :
-    PagingSource<Int, Movie>() {
+class MoviePagingSource @Inject constructor(
+    private val movieRepository: MovieRepository,
+    private val movieType: MovieType
+) : PagingSource<Int, Movie>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val page = params.key ?: 1
-            val response = movieRepository.getPopularMovies(page)
+
+            val response = when (movieType) {
+                MovieType.POPULAR -> movieRepository.getPopularMovies(page)
+                MovieType.TOP_RATED -> movieRepository.getTopRatedMovies(page)
+                MovieType.UPCOMING -> movieRepository.getUpcomingMovies(page)
+                MovieType.NOW_PLAYING -> movieRepository.getNowPlayingMovies(page)
+            }
+
 
             LoadResult.Page(
                 data = response.results.map { it.toMovie() },

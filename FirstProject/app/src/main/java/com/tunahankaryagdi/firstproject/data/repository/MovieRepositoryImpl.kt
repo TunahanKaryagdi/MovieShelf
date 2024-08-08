@@ -11,6 +11,7 @@ import com.tunahankaryagdi.firstproject.data.source.local.MovieDao
 import com.tunahankaryagdi.firstproject.data.source.remote.MovieService
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
+import com.tunahankaryagdi.firstproject.utils.MovieType
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -46,8 +47,8 @@ class MovieRepositoryImpl @Inject constructor(
         return movieDao.getAll()
     }
 
-    override fun getPagingSource(): PagingSource<Int, Movie> {
-        return MoviePagingSource(this)
+    override fun getPagingSource(movieType: MovieType): PagingSource<Int, Movie> {
+        return MoviePagingSource(this, movieType)
     }
 
 }

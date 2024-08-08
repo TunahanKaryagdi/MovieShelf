@@ -7,19 +7,25 @@ import androidx.paging.cachedIn
 import com.tunahankaryagdi.firstproject.data.model.dto.toMovie
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
-import com.tunahankaryagdi.firstproject.domain.use_case.GetMoviesUseCase
+import com.tunahankaryagdi.firstproject.domain.use_case.GetNowPlayingMoviesUseCase
+import com.tunahankaryagdi.firstproject.domain.use_case.GetPopularMoviesUseCase
+import com.tunahankaryagdi.firstproject.domain.use_case.GetTopRatedMoviesUseCase
+import com.tunahankaryagdi.firstproject.domain.use_case.GetUpcomingMoviesUseCase
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: MovieRepository,
-    private val getMoviesUseCase: GetMoviesUseCase
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
+    private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -44,45 +50,58 @@ class HomeViewModel @Inject constructor(
 
     private fun getPopularMovies() {
         viewModelScope.launch {
-            try {
-                val response = repository.getPopularMovies()
-                val movies = response.results.map {
-                    it.toMovie()
-                }
+            getPopularMoviesUseCase.invoke().collect { movies->
                 _uiState.update { current ->
                     current.copy(
                         popularMovies = movies
                     )
                 }
-            } catch (e: Exception) {
-                println("error")
             }
         }
     }
-
 
     private fun getNowPlayingMovies() {
         viewModelScope.launch {
-            try {
-                getMoviesUseCase.invoke().cachedIn(viewModelScope).collect { pagingData ->
-                    _uiState.update { current ->
-                        current.copy(
-                            movies = pagingData
-                        )
-                    }
+            getNowPlayingMoviesUseCase.invoke().cachedIn(viewModelScope).collectLatest { pagingData->
+                _uiState.update { current ->
+                    current.copy(
+                        movies = pagingData
+                    )
                 }
-            } catch (e: Exception) {
-                println("error")
             }
         }
     }
 
+    private fun getTopRatedMovies() {
+        viewModelScope.launch {
+            getTopRatedMoviesUseCase.invoke().cachedIn(viewModelScope).collectLatest { pagingData->
+                _uiState.update { current ->
+                    current.copy(
+                        movies = pagingData
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getUpcomingMovies() {
+        viewModelScope.launch {
+            getUpcomingMoviesUseCase.invoke().cachedIn(viewModelScope).collectLatest { pagingData->
+                _uiState.update { current ->
+                    current.copy(
+                        movies = pagingData
+                    )
+                }
+            }
+        }
+    }
+
+
     private fun getMovies() {
         when (_uiState.value.selectedTab) {
-            HomeTab.NOW_PLAYING -> {
-                getNowPlayingMovies()
-            }
-
+            HomeTab.NOW_PLAYING -> getNowPlayingMovies()
+            HomeTab.TOP_RATED -> getTopRatedMovies()
+            HomeTab.UPCOMING -> getUpcomingMovies()
             else -> {}
         }
     }
