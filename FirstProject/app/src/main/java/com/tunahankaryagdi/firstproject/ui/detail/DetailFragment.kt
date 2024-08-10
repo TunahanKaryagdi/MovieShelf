@@ -9,9 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.google.android.material.tabs.TabLayout
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentDetailBinding
 import com.tunahankaryagdi.firstproject.domain.model.MovieDetail
+import com.tunahankaryagdi.firstproject.ui.detail.adapter.DetailReviewsAdapter
+import com.tunahankaryagdi.firstproject.utils.DetailTab
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -20,6 +23,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private lateinit var binding: FragmentDetailBinding
     private val viewModel: DetailViewModel by viewModels()
     private val args: DetailFragmentArgs by navArgs()
+    private lateinit var detailReviewsAdapter: DetailReviewsAdapter
 
 
     override fun onCreateView(
@@ -33,8 +37,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setInitialValues()
         observeUiState()
         viewModel.getDetailByMovieId(args.movieId)
+        viewModel.getReviewsByMovieId(args.movieId)
     }
 
     private fun observeUiState() {
@@ -43,19 +49,76 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 if (state.movieDetail != null) setUi(state.movieDetail)
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                detailReviewsAdapter.updateReviews(state.reviews)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                when(state.selectedTab){
+                    DetailTab.ABOUT_MOVIE->{
+                        with(binding){
+                            tvAboutMovie.visibility = View.VISIBLE
+                            rvReviewList.visibility = View.INVISIBLE
+                            tvEmptyReview.visibility = View.INVISIBLE
+                        }
+                    }
+                    DetailTab.REVIEWS->{
+                        with(binding){
+                            tvAboutMovie.visibility = View.INVISIBLE
+                            if (state.reviews.isEmpty()) tvEmptyReview.visibility = View.VISIBLE
+                            else rvReviewList.visibility = View.VISIBLE
+
+                        }
+                    }
+                    DetailTab.CAST->{
+                        with(binding){
+                            tvAboutMovie.visibility = View.INVISIBLE
+                            rvReviewList.visibility = View.INVISIBLE
+                            tvEmptyReview.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setUi(movieDetail: MovieDetail) {
-        with(binding){
+
+        with(binding) {
             tvType.text = movieDetail.genres[0].name
             tvDuration.text = movieDetail.runtime.toString()
-            tvDetail.text = movieDetail.originalTitle
+            tvMovieTitle.text = movieDetail.originalTitle
             tvYear.text = movieDetail.releaseDate
+            tvAboutMovie.text = movieDetail.overview
             ivPoster.load("https://image.tmdb.org/t/p/original/${movieDetail.backdropPath}")
             ivMovieDetail.load("https://image.tmdb.org/t/p/original/${movieDetail.posterPath}")
             ivSave.setOnClickListener {
                 viewModel.addToFavorites(movieDetail)
             }
+            tlDetailTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    val position = tab?.position ?: return
+                    val selectedTab = DetailTab.entries[position]
+                    viewModel.setTab(selectedTab)
+                }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+            rvReviewList.adapter = detailReviewsAdapter
         }
     }
+
+    private fun setInitialValues(){
+        detailReviewsAdapter = DetailReviewsAdapter()
+        with(binding){
+            DetailTab.entries.forEach { detailTab ->
+                tlDetailTabs.addTab(tlDetailTabs.newTab().setText(detailTab.resId))
+            }
+            rvReviewList.adapter = detailReviewsAdapter
+        }
+
+    }
+
 }

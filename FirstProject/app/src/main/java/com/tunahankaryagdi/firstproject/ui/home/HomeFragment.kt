@@ -81,10 +81,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
 
         HomeTab.entries.forEach { homeTab ->
-            binding.tlTabs.addTab(binding.tlTabs.newTab().setText(homeTab.resId))
+            binding.tlHomeTabs.addTab(binding.tlHomeTabs.newTab().setText(homeTab.resId))
         }
 
-        binding.tlTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tlHomeTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val position = tab?.position ?: return
                 val selectedTab = HomeTab.entries[position]

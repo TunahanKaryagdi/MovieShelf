@@ -1,6 +1,7 @@
 package com.tunahankaryagdi.firstproject.di
 
 import com.tunahankaryagdi.firstproject.data.source.remote.MovieService
+import com.tunahankaryagdi.firstproject.data.source.remote.ReviewService
 import com.tunahankaryagdi.firstproject.data.source.remote.SearchService
 import dagger.Module
 import dagger.Provides
@@ -18,4 +19,8 @@ object ServiceModule {
     @Provides
     fun provideSearchService(retrofit: Retrofit): SearchService =
         retrofit.create(SearchService::class.java)
+
+    @Provides
+    fun provideReviewService(retrofit: Retrofit): ReviewService =
+        retrofit.create(ReviewService::class.java)
 }
