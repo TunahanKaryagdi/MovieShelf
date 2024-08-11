@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.domain.model.SearchMovie
 import com.tunahankaryagdi.firstproject.domain.use_case.GetMoviesBySearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,8 +25,6 @@ class SearchViewModel @Inject constructor(
 
 
     fun getMoviesBySearch(searchText: String) {
-
-
         viewModelScope.launch {
             getMoviesBySearchUseCase.invoke(searchText).collectLatest { pagingData ->
                 _uiState.update { current ->
@@ -41,5 +40,5 @@ class SearchViewModel @Inject constructor(
 
 data class SearchUiState(
     val isLoading: Boolean = false,
-    val movies: PagingData<Movie> = PagingData.empty()
+    val movies: PagingData<SearchMovie> = PagingData.empty()
 )

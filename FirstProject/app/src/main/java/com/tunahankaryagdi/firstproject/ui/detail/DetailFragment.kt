@@ -88,7 +88,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         with(binding) {
             tvType.text = movieDetail.genres[0].name
-            tvDuration.text = movieDetail.runtime.toString()
+            tvDuration.text = "${movieDetail.runtime.toString()} minutes"
             tvMovieTitle.text = movieDetail.originalTitle
             tvYear.text = movieDetail.releaseDate
             tvAboutMovie.text = movieDetail.overview

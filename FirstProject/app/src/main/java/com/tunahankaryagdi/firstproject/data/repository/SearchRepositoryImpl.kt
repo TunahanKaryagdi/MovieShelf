@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import com.tunahankaryagdi.firstproject.data.model.SearchMoviesResponse
 import com.tunahankaryagdi.firstproject.data.source.remote.SearchService
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.domain.model.SearchMovie
 import com.tunahankaryagdi.firstproject.domain.repository.SearchRepository
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class SearchRepositoryImpl @Inject constructor(
         return searchService.getMoviesBySearch(searchText, page)
     }
 
-    override fun getPagingSource(searchText: String): PagingSource<Int, Movie> {
+    override fun getPagingSource(searchText: String): PagingSource<Int, SearchMovie> {
         return SearchPagingSource(this,searchText)
     }
 

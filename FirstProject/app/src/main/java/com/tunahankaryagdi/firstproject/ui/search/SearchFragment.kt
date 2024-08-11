@@ -8,6 +8,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
 import com.tunahankaryagdi.firstproject.databinding.FragmentSearchBinding
@@ -56,6 +58,21 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
             }
         )
+
+        searchMovieListAdapter.addLoadStateListener { loadStates ->
+            val refreshState = loadStates.refresh
+            with(binding){
+                if (refreshState is LoadState.NotLoading && searchMovieListAdapter.itemCount == 0) {
+                    rvSearchList.visibility = View.INVISIBLE
+                    llSearchEmptyResult.visibility = View.VISIBLE
+                } else {
+                    rvSearchList.visibility = View.VISIBLE
+                    llSearchEmptyResult.visibility = View.INVISIBLE
+                }
+            }
+
+        }
+
         with(binding) {
             rvSearchList.adapter = searchMovieListAdapter
             etSearchText.addTextChangedListener { text ->

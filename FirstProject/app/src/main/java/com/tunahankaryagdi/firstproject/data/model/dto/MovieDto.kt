@@ -2,6 +2,7 @@ package com.tunahankaryagdi.firstproject.data.model.dto
 
 import com.google.gson.annotations.SerializedName
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.domain.model.SearchMovie
 
 data class MovieDto(
     val adult: Boolean,
@@ -34,5 +35,17 @@ fun MovieDto.toMovie(): Movie {
         id = id,
         title = title,
         backdropPath = backdropPath
+    )
+}
+
+fun MovieDto.toSearchMovie(): SearchMovie {
+    return SearchMovie(
+        id = id,
+        title = title,
+        voteAverage = voteAverage,
+        adult = adult,
+        backdropPath = backdropPath,
+        releaseDate = releaseDate,
+        popularity = popularity
     )
 }
