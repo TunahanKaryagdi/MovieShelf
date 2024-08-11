@@ -47,6 +47,10 @@ class MovieRepositoryImpl @Inject constructor(
         return movieDao.getAll()
     }
 
+    override suspend fun deleteFavoriteMovie(movieEntity: MovieEntity) {
+        return movieDao.delete(movieEntity)
+    }
+
     override fun getPagingSource(movieType: MovieType): PagingSource<Int, Movie> {
         return MoviePagingSource(this, movieType)
     }

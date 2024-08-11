@@ -2,7 +2,9 @@ package com.tunahankaryagdi.firstproject.ui.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetFavoriteMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase
+    private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
+    private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoriteUiState())
@@ -37,6 +40,16 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
+    fun deleteFavoriteMovie(movie: Movie) {
+        val movieEntity =
+            MovieEntity(movie.id, movie.title, movie.backdropPath)
+        viewModelScope.launch {
+            deleteFavoriteMovieUseCase.invoke(movieEntity).collect { isSuccessfull ->
+                if (isSuccessfull) getFavoriteMovies()
+            }
+        }
+    }
+
     fun filterMovies(searchText: String) {
         val filteredMovies = _uiState.value.movies.filter {
             it.title.contains(searchText, ignoreCase = true)
@@ -47,6 +60,8 @@ class FavoriteViewModel @Inject constructor(
             )
         }
     }
+
+
 
 }
 

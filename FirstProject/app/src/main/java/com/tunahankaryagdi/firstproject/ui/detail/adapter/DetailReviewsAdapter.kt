@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.R
-import com.tunahankaryagdi.firstproject.databinding.ItemPopularMoviesBinding
 import com.tunahankaryagdi.firstproject.databinding.ItemReviewListBinding
-import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.model.Review
 
 class DetailReviewsAdapter() :

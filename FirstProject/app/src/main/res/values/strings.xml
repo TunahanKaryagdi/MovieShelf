@@ -18,6 +18,10 @@
     <string name="all_ages">All ages</string>
     <string name="popularity">%1$.2f popularity</string>
     <string name="movie_not_found">We Are Sorry,\n We Can Not Find The Movie :(</string>
+    <string name="confirm">Confirm</string>
+    <string name="are_you_sure">Are you sure you want to delete this item?</string>
+    <string name="cancel">Cancel</string>
+    <string name="favorite_not_found">There is no movie yet!</string>
 
 
 </resources>

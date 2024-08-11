@@ -20,6 +20,7 @@ interface MovieRepository {
     suspend fun getDetailByMovieId(movieId: Int): MovieDetailDto
     suspend fun addToFavorites(movieEntity: MovieEntity)
     suspend fun getAllFavorites(): List<MovieEntity>
+    suspend fun deleteFavoriteMovie(movieEntity: MovieEntity)
     fun getPagingSource(movieType: MovieType): PagingSource<Int, Movie>
 }
 
