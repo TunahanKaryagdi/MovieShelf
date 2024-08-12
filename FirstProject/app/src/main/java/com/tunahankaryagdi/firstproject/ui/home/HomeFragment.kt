@@ -1,18 +1,15 @@
 package com.tunahankaryagdi.firstproject.ui.home
 
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
-import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
+import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
 import com.tunahankaryagdi.firstproject.utils.HomeTab
@@ -21,34 +18,48 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.fragment_home) {
-    private val viewModel: HomeViewModel by viewModels()
-    private lateinit var binding: FragmentHomeBinding
+class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
+    override val viewModel: HomeViewModel by viewModels()
     private lateinit var homeMovieListAdapter: HomeMovieListAdapter
     private lateinit var homePopularMoviesAdapter: HomePopularMoviesAdapter
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentHomeBinding.inflate(inflater)
-        return binding.root
+    override fun inflateBinding(
+        layoutInflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentHomeBinding {
+        return FragmentHomeBinding.inflate(layoutInflater)
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-        setAdapters()
-        observeUiState()
-        changeRecyclerLayout()
-    }
+    override fun setupViews() {
+        homeMovieListAdapter = HomeMovieListAdapter(
+            onClickMovie = { movieId ->
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
+                )
+            }
+        )
+        homePopularMoviesAdapter = HomePopularMoviesAdapter()
 
-    private fun changeRecyclerLayout() {
+        with(binding.vpPopularMovies) {
+            adapter = homePopularMoviesAdapter
+            offscreenPageLimit = 3
+        }
+
         with(binding) {
+            rvMovies.adapter = homeMovieListAdapter
+            HomeTab.entries.forEach { homeTab ->
+                binding.tlHomeTabs.addTab(binding.tlHomeTabs.newTab().setText(homeTab.resId))
+            }
+            tlHomeTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    val position = tab?.position ?: return
+                    val selectedTab = HomeTab.entries[position]
+                    viewModel.setTab(selectedTab)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
             btn1x.setOnClickListener {
                 rvMovies.layoutManager = LinearLayoutManager(requireContext())
             }
@@ -61,45 +72,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-
-    private fun setAdapters() {
-
-        homeMovieListAdapter = HomeMovieListAdapter(
-            onClickMovie = { movieId ->
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId))
-            }
-        )
-        homePopularMoviesAdapter = HomePopularMoviesAdapter()
-
-        binding.rvMovies.adapter = homeMovieListAdapter
-
-
-        with(binding.vpPopularMovies) {
-            adapter = homePopularMoviesAdapter
-            offscreenPageLimit = 3
-        }
-
-
-        HomeTab.entries.forEach { homeTab ->
-            binding.tlHomeTabs.addTab(binding.tlHomeTabs.newTab().setText(homeTab.resId))
-        }
-
-        binding.tlHomeTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val position = tab?.position ?: return
-                val selectedTab = HomeTab.entries[position]
-                viewModel.setTab(selectedTab)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-
-        })
-
-    }
-
-    private fun observeUiState() {
+    override fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
                 homePopularMoviesAdapter.updateMovies(state.popularMovies)
@@ -111,6 +84,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 homeMovieListAdapter.submitData(state.movies)
             }
         }
-
     }
+
 }

@@ -12,6 +12,8 @@ import com.tunahankaryagdi.firstproject.domain.use_case.GetNowPlayingMoviesUseCa
 import com.tunahankaryagdi.firstproject.domain.use_case.GetPopularMoviesUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetTopRatedMoviesUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetUpcomingMoviesUseCase
+import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
+import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,12 +30,8 @@ class HomeViewModel @Inject constructor(
     private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState>
-        get() = _uiState
-
+) : BaseViewModel<HomeUiState>() {
+    override fun createInitialState(): HomeUiState = HomeUiState()
 
     init {
         getPopularMovies()
@@ -115,8 +113,8 @@ class HomeViewModel @Inject constructor(
 
 
 data class HomeUiState(
-    val isLoading: Boolean = false,
+    override val isLoading: Boolean = false,
     val selectedTab: HomeTab = HomeTab.NOW_PLAYING,
     val popularMovies: List<Movie> = emptyList(),
     val movies: PagingData<Movie> = PagingData.empty()
-)
+) : BaseUiState()

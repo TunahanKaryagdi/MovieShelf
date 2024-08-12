@@ -7,6 +7,8 @@ import com.tunahankaryagdi.firstproject.domain.error_handling.Resource
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetFavoriteMoviesUseCase
+import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
+import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
 import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,11 +21,8 @@ import javax.inject.Inject
 class FavoriteViewModel @Inject constructor(
     private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
     private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(FavoriteUiState())
-    val uiState: StateFlow<FavoriteUiState>
-        get() = _uiState
+) : BaseViewModel<FavoriteUiState>() {
+    override fun createInitialState(): FavoriteUiState = FavoriteUiState()
 
     init {
         getFavoriteMovies()
@@ -68,12 +67,10 @@ class FavoriteViewModel @Inject constructor(
             )
         }
     }
-
-
 }
 
 data class FavoriteUiState(
-    val isLoading: Boolean = false,
+    override val isLoading: Boolean = false,
     val movies: List<Movie> = emptyList(),
     val filteredMovies: List<Movie> = emptyList(),
-)
+) : BaseUiState()

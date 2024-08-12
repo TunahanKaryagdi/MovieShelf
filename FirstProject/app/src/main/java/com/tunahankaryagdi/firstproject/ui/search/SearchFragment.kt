@@ -1,62 +1,36 @@
 package com.tunahankaryagdi.firstproject.ui.search
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.paging.PagingData
-import com.tunahankaryagdi.firstproject.R
-import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
 import com.tunahankaryagdi.firstproject.databinding.FragmentSearchBinding
+import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
 import com.tunahankaryagdi.firstproject.ui.search.adapter.SearchMovieListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(R.layout.fragment_search) {
-    private val viewModel: SearchViewModel by viewModels()
-    private lateinit var binding: FragmentSearchBinding
+class SearchFragment : BaseFragment<FragmentSearchBinding,SearchViewModel>() {
+
+    override val viewModel: SearchViewModel by viewModels()
     private lateinit var searchMovieListAdapter: SearchMovieListAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentSearchBinding.inflate(inflater)
-        return binding.root
+
+    override fun inflateBinding(
+        layoutInflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(layoutInflater,container,false)
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-        setAdapters()
-        observeUiState()
-    }
-
-    private fun observeUiState() {
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collectLatest { state ->
-                searchMovieListAdapter.submitData(state.movies)
-            }
-        }
-    }
-
-    private fun setAdapters() {
-
+    override fun setupViews() {
         searchMovieListAdapter = SearchMovieListAdapter(
-            onClickMovie = {
-
-            }
+            onClickMovie = {}
         )
 
         searchMovieListAdapter.addLoadStateListener { loadStates ->
@@ -70,13 +44,19 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     llSearchEmptyResult.visibility = View.INVISIBLE
                 }
             }
-
         }
-
         with(binding) {
             rvSearchList.adapter = searchMovieListAdapter
             etSearchText.addTextChangedListener { text ->
                 viewModel.getMoviesBySearch(text.toString())
+            }
+        }
+    }
+
+    override fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                searchMovieListAdapter.submitData(state.movies)
             }
         }
     }

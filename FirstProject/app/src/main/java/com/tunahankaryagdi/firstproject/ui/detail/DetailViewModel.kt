@@ -1,23 +1,19 @@
 package com.tunahankaryagdi.firstproject.ui.detail
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
-import com.tunahankaryagdi.firstproject.domain.error_handling.Resource
-import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.model.MovieDetail
 import com.tunahankaryagdi.firstproject.domain.model.Review
 import com.tunahankaryagdi.firstproject.domain.use_case.AddToFavoritesUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.CheckIsFavoriteUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetDetailByMovieIdUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetReviewsUseCase
-import com.tunahankaryagdi.firstproject.ui.home.HomeUiState
+import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
+import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
 import com.tunahankaryagdi.firstproject.utils.DetailTab
-import com.tunahankaryagdi.firstproject.utils.HomeTab
 import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,31 +24,41 @@ class DetailViewModel @Inject constructor(
     private val getDetailByMovieIdUseCase: GetDetailByMovieIdUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
-    private val checkIsFavoriteUseCase: CheckIsFavoriteUseCase
-) : ViewModel() {
+    private val checkIsFavoriteUseCase: CheckIsFavoriteUseCase,
+    savedStateHandle: SavedStateHandle
+) : BaseViewModel<DetailUiState>() {
 
-    private val _uiState = MutableStateFlow(DetailUiState())
-    val uiState: StateFlow<DetailUiState>
-        get() = _uiState
+    override fun createInitialState(): DetailUiState = DetailUiState()
+
+    init {
+        savedStateHandle.get<Int>("movieId")?.let { movieId ->
+            init(movieId)
+        }
+    }
 
 
-    fun getDetailByMovieId(movieId: Int) {
+    fun init(movieId: Int){
+        getDetailByMovieId(movieId)
+        getReviewsByMovieId(movieId)
+        checkIsFavorite(movieId)
+    }
+
+    private fun getDetailByMovieId(movieId: Int) {
         viewModelScope.launch {
             getDetailByMovieIdUseCase.invoke(movieId).collectAndHandle(
                 scope = this,
                 onSuccess = { data ->
                     _uiState.update { current ->
                         current.copy(
-                            movieDetail = data
+                            movieDetail = data,
                         )
                     }
                 },
-                onError = {}
             )
         }
     }
 
-    fun getReviewsByMovieId(movieId: Int) {
+    private fun getReviewsByMovieId(movieId: Int) {
         viewModelScope.launch {
             getReviewsUseCase.invoke(movieId).collectAndHandle(
                 scope = this,
@@ -65,8 +71,6 @@ class DetailViewModel @Inject constructor(
                 },
                 onError = {}
             )
-
-
         }
     }
 
@@ -82,7 +86,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun checkIsFavorite(movieId: Int) {
+    private fun checkIsFavorite(movieId: Int) {
         viewModelScope.launch {
             checkIsFavoriteUseCase.invoke(movieId).collectAndHandle(
                 scope = this,
@@ -110,9 +114,9 @@ class DetailViewModel @Inject constructor(
 }
 
 data class DetailUiState(
-    val isLoading: Boolean = false,
+    override val isLoading: Boolean = false,
     val movieDetail: MovieDetail? = null,
     val reviews: List<Review> = emptyList(),
     val selectedTab: DetailTab = DetailTab.ABOUT_MOVIE,
     val isFavorite: Boolean = false
-)
+) : BaseUiState()
