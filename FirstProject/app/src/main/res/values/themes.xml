@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.FirstProject" parent="Theme.Material3.DayNight.NoActionBar">
-
+        <item name="android:background">@color/black</item>
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/grey</item>
         <item name="colorSecondary">@color/blue</item>
@@ -60,6 +60,13 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:hint">@string/search</item>
         <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.Design.BottomNavigationView">
+        <item name="android:background">@color/black</item>
+        <item name="itemIconTint">@color/blue</item>
+        <item name="itemTextColor">@color/blue</item>
+        <item name="itemRippleColor">?attr/colorControlHighlight</item>
     </style>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.tunahankaryagdi.firstproject.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -32,7 +33,22 @@ class MainActivity : AppCompatActivity() {
 
 
         val navController = findNavController(R.id.fragmentContainerView)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailFragment -> {
+                    setBottomNavigationViewVisibility(false)
+                }
+                else -> {
+                    setBottomNavigationViewVisibility(true)
+                }
+            }
+
+        }
         binding.bottomNavigation.setupWithNavController(navController)
 
+    }
+
+    private fun setBottomNavigationViewVisibility(visible: Boolean) {
+        binding.bottomNavigation.visibility = if (visible) View.VISIBLE else View.GONE
     }
 }

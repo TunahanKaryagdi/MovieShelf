@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorPrimary">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/llTopBar"
@@ -67,14 +66,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:src="@drawable/ic_star" />
+            android:src="@drawable/ic_star"
+            android:background="@android:color/transparent"/>
 
         <TextView
             android:id="@+id/tvMovieRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="9.5"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"/>
     </LinearLayout>
 
     <ImageView
@@ -118,7 +119,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@android:color/background_dark" />
+            android:background="@color/white"/>
 
         <TextView
             android:id="@+id/tvDuration"
@@ -131,7 +132,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@android:color/background_dark" />
+            android:background="@color/white"/>
 
         <TextView
             android:id="@+id/tvType"

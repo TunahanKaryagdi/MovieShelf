@@ -41,6 +41,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         observeUiState()
         viewModel.getDetailByMovieId(args.movieId)
         viewModel.getReviewsByMovieId(args.movieId)
+        viewModel.checkIsFavorite(args.movieId)
     }
 
     private fun observeUiState() {
@@ -79,6 +80,13 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                             tvEmptyReview.visibility = View.INVISIBLE
                         }
                     }
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                with(binding.ivSave){
+                    if (state.isFavorite) setImageResource(R.drawable.ic_bookmark) else setImageResource(R.drawable.ic_bookmark_outline)
                 }
             }
         }

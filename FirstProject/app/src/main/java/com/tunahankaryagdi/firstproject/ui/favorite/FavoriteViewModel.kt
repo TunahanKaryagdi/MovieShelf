@@ -3,9 +3,11 @@ package com.tunahankaryagdi.firstproject.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
+import com.tunahankaryagdi.firstproject.domain.error_handling.Resource
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetFavoriteMoviesUseCase
+import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,14 +31,17 @@ class FavoriteViewModel @Inject constructor(
 
     private fun getFavoriteMovies() {
         viewModelScope.launch {
-            getFavoriteMoviesUseCase.invoke().collect { movies ->
-                _uiState.update { current ->
-                    current.copy(
-                        movies = movies,
-                        filteredMovies = movies
-                    )
+            getFavoriteMoviesUseCase.invoke().collectAndHandle(
+                scope = this,
+                onSuccess = { data ->
+                    _uiState.update { current ->
+                        current.copy(
+                            movies = data,
+                            filteredMovies = data
+                        )
+                    }
                 }
-            }
+            )
         }
     }
 
@@ -44,9 +49,12 @@ class FavoriteViewModel @Inject constructor(
         val movieEntity =
             MovieEntity(movie.id, movie.title, movie.backdropPath)
         viewModelScope.launch {
-            deleteFavoriteMovieUseCase.invoke(movieEntity).collect { isSuccessfull ->
-                if (isSuccessfull) getFavoriteMovies()
-            }
+            deleteFavoriteMovieUseCase.invoke(movieEntity).collectAndHandle(
+                this,
+                onSuccess = {
+                    getFavoriteMovies()
+                }
+            )
         }
     }
 
@@ -60,7 +68,6 @@ class FavoriteViewModel @Inject constructor(
             )
         }
     }
-
 
 
 }

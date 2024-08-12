@@ -51,6 +51,10 @@ class MovieRepositoryImpl @Inject constructor(
         return movieDao.delete(movieEntity)
     }
 
+    override suspend fun checkIsFavorite(movieId: Int): Boolean {
+        return movieDao.isFavorite(movieId)
+    }
+
     override fun getPagingSource(movieType: MovieType): PagingSource<Int, Movie> {
         return MoviePagingSource(this, movieType)
     }
