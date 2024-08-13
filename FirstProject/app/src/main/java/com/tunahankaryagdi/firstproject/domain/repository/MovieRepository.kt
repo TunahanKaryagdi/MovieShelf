@@ -9,6 +9,7 @@ import com.tunahankaryagdi.firstproject.data.model.dto.MovieDetailDto
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.utils.MovieType
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -19,7 +20,7 @@ interface MovieRepository {
     suspend fun getUpcomingMovies(page: Int = 1): UpcomingResponse
     suspend fun getDetailByMovieId(movieId: Int): MovieDetailDto
     suspend fun addToFavorites(movieEntity: MovieEntity)
-    suspend fun getAllFavorites(): List<MovieEntity>
+    suspend fun getAllFavorites(): Flow< List<MovieEntity>>
     suspend fun deleteFavoriteMovie(movieEntity: MovieEntity)
     suspend fun checkIsFavorite(movieId: Int) : Boolean
     fun getPagingSource(movieType: MovieType): PagingSource<Int, Movie>

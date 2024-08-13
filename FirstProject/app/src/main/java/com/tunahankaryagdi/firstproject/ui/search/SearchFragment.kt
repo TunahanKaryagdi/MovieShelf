@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.tunahankaryagdi.firstproject.databinding.FragmentSearchBinding
 import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchFragment : BaseFragment<FragmentSearchBinding,SearchViewModel>() {
+class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
 
     override val viewModel: SearchViewModel by viewModels()
     private lateinit var searchMovieListAdapter: SearchMovieListAdapter
@@ -25,17 +26,21 @@ class SearchFragment : BaseFragment<FragmentSearchBinding,SearchViewModel>() {
         layoutInflater: LayoutInflater,
         container: ViewGroup?
     ): FragmentSearchBinding {
-        return FragmentSearchBinding.inflate(layoutInflater,container,false)
+        return FragmentSearchBinding.inflate(layoutInflater, container, false)
     }
 
     override fun setupViews() {
         searchMovieListAdapter = SearchMovieListAdapter(
-            onClickMovie = {}
+            onClickMovie = { movieId ->
+                findNavController().navigate(
+                    SearchFragmentDirections.actionSearchFragmentToDetailFragment(movieId)
+                )
+            }
         )
 
         searchMovieListAdapter.addLoadStateListener { loadStates ->
             val refreshState = loadStates.refresh
-            with(binding){
+            with(binding) {
                 if (refreshState is LoadState.NotLoading && searchMovieListAdapter.itemCount == 0) {
                     rvSearchList.visibility = View.INVISIBLE
                     llSearchEmptyResult.visibility = View.VISIBLE

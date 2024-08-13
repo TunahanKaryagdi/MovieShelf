@@ -10,6 +10,7 @@ import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.ItemSearchListBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.model.SearchMovie
+import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
 
 class SearchMovieListAdapter(
     val onClickMovie: (Int) -> Unit
@@ -28,12 +29,15 @@ class SearchMovieListAdapter(
     override fun onBindViewHolder(holder: SearchMovieListViewHolder, position: Int) {
         val movie = getItem(position) ?: return
         with(holder.binding){
-            ivSearchItemImage.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
+            ivSearchItemImage.load(movie.backdropPath?.getImageUrlFromPath())
             tvSearchItemTitle.text = movie.title
             tvSearchItemDate.text = movie.releaseDate
             if (movie.adult) tvSearchItemAdult.setText(R.string.adult_content) else tvSearchItemAdult.setText(R.string.all_ages)
             tvSearchItemPopularity.text = holder.itemView.context.getString(R.string.popularity,movie.popularity)
             tvSearchItemRank.text = movie.voteAverage.toString()
+            llSearchMovieItem.setOnClickListener {
+                onClickMovie(movie.id)
+            }
         }
     }
 

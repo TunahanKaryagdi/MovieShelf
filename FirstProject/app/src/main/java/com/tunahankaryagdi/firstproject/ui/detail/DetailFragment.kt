@@ -53,7 +53,7 @@ class DetailFragment : BaseFragment<FragmentDetailBinding, DetailViewModel>() {
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                detailReviewsAdapter.updateReviews(state.reviews)
+                detailReviewsAdapter.submitList(state.reviews)
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {

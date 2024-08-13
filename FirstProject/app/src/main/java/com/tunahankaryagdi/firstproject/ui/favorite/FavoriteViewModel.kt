@@ -13,6 +13,7 @@ import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,17 +31,19 @@ class FavoriteViewModel @Inject constructor(
 
     private fun getFavoriteMovies() {
         viewModelScope.launch {
-            getFavoriteMoviesUseCase.invoke().collectAndHandle(
-                scope = this,
-                onSuccess = { data ->
-                    _uiState.update { current ->
-                        current.copy(
-                            movies = data,
-                            filteredMovies = data
-                        )
+            when(val response = getFavoriteMoviesUseCase.invoke()){
+                is Resource.Success->{
+                    response.data.collectLatest { movies->
+                        _uiState.update { current ->
+                            current.copy(
+                                filteredMovies = movies,
+                                movies = movies
+                            )
+                        }
                     }
                 }
-            )
+                else->{}
+            }
         }
     }
 

@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_nav_menu"
         style="@style/BottomNavigationViewStyle"
+        
         />
 
 </LinearLayout>

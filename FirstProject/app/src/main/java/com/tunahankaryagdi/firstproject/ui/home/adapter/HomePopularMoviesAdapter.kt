@@ -6,8 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemPopularMoviesBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.ui.base.BaseDiffUtil
+import com.tunahankaryagdi.firstproject.ui.base.calculateAndDispatch
+import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
 
-class HomePopularMoviesAdapter() :
+class HomePopularMoviesAdapter(
+    val onClickPopularMovie: (Int) -> Unit
+) :
     RecyclerView.Adapter<HomePopularMoviesAdapter.HomePopularMoviesViewHolder>() {
 
     private var movies: List<Movie> = emptyList()
@@ -26,12 +31,18 @@ class HomePopularMoviesAdapter() :
 
     override fun onBindViewHolder(holder: HomePopularMoviesViewHolder, position: Int) {
         val movie = movies[position]
-        holder.binding.ivPopularMovie.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
+        with(holder.binding){
+            ivPopularMovie.load(movie.backdropPath?.getImageUrlFromPath())
+            llPopularMovieItem.setOnClickListener {
+                onClickPopularMovie(movie.id)
+            }
+        }
     }
 
-    fun updateMovies(newItems: List<Movie>) {
-        movies = newItems
-        notifyDataSetChanged()
+    fun submitList(newMovies: List<Movie>) {
+        val diffCallback = BaseDiffUtil(movies,newMovies)
+        diffCallback.calculateAndDispatch(this)
+        movies = newMovies
     }
 
 }

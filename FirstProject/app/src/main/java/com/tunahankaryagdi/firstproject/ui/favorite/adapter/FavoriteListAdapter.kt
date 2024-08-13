@@ -5,11 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemFavoriteListBinding
-import com.tunahankaryagdi.firstproject.databinding.ItemSearchListBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.ui.base.BaseDiffUtil
+import com.tunahankaryagdi.firstproject.ui.base.calculateAndDispatch
+import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
 
 class FavoriteListAdapter(
-    val onClickDeleteItem: (Movie) -> Unit
+    val onClickDeleteItem: (Movie) -> Unit,
+    val onClickItem: (Int) -> Unit,
 ) : RecyclerView.Adapter<FavoriteListAdapter.FavoriteListViewHolder>() {
 
     private var movies: List<Movie> = emptyList()
@@ -26,16 +29,23 @@ class FavoriteListAdapter(
     override fun onBindViewHolder(holder: FavoriteListViewHolder, position: Int) {
         val movie = movies[position]
         with(holder.binding){
-            ivFavoriteItemImage.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
+            ivFavoriteItemImage.load(movie.backdropPath?.getImageUrlFromPath())
             tvFavoriteItemTitle.text = movie.title
             ivFavoriteItemDelete.setOnClickListener {
                 onClickDeleteItem(movie)
             }
+            llFavoriteMovieItem.setOnClickListener {
+                onClickItem(movie.id)
+            }
         }
     }
 
-    fun updateMovies(newItems: List<Movie>) {
-        movies = newItems
-        notifyDataSetChanged()
+
+    fun submitList(newMovies: List<Movie>) {
+        val diffCallback = BaseDiffUtil(movies,newMovies)
+        diffCallback.calculateAndDispatch(this)
+        movies = newMovies
     }
+
+
 }

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.tunahankaryagdi.firstproject.databinding.FragmentFavoriteBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
@@ -28,7 +29,13 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding, FavoriteViewModel
     }
 
     override fun setupViews() {
-        favoriteListAdapter = FavoriteListAdapter(::onClickDeleteItem)
+        favoriteListAdapter = FavoriteListAdapter(
+            onClickDeleteItem = ::onClickDeleteItem,
+            onClickItem = { movieId ->
+                findNavController().navigate(
+                    FavoriteFragmentDirections.actionFavoriteFragmentToDetailFragment(movieId)
+                )
+            })
         binding.rvFavoriteList.adapter = favoriteListAdapter
         with(binding) {
             rvFavoriteList.adapter = favoriteListAdapter
@@ -41,7 +48,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding, FavoriteViewModel
     override fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
-                favoriteListAdapter.updateMovies(state.filteredMovies)
+                favoriteListAdapter.submitList(state.filteredMovies)
                 with(binding) {
                     if (state.filteredMovies.isEmpty()) {
                         rvFavoriteList.visibility = View.INVISIBLE

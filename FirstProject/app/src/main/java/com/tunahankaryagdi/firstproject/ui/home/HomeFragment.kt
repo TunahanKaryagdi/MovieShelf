@@ -1,27 +1,41 @@
 package com.tunahankaryagdi.firstproject.ui.home
 
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
 import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
+import com.tunahankaryagdi.firstproject.ui.components.ViewPagerTransform
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override val viewModel: HomeViewModel by viewModels()
     private lateinit var homeMovieListAdapter: HomeMovieListAdapter
     private lateinit var homePopularMoviesAdapter: HomePopularMoviesAdapter
+
+    private val handler = Handler(Looper.getMainLooper())
+
 
     override fun inflateBinding(
         layoutInflater: LayoutInflater,
@@ -31,18 +45,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     override fun setupViews() {
-        homeMovieListAdapter = HomeMovieListAdapter(
-            onClickMovie = { movieId ->
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
-                )
-            }
-        )
-        homePopularMoviesAdapter = HomePopularMoviesAdapter()
+        homeMovieListAdapter = HomeMovieListAdapter(onClickMovie = ::navigateToDetail)
+        homePopularMoviesAdapter = HomePopularMoviesAdapter(onClickPopularMovie = ::navigateToDetail)
+
 
         with(binding.vpPopularMovies) {
             adapter = homePopularMoviesAdapter
             offscreenPageLimit = 3
+            getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            setPageTransformer(ViewPagerTransform())
         }
 
         with(binding) {
@@ -60,22 +71,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-            btn1x.setOnClickListener {
-                rvMovies.layoutManager = LinearLayoutManager(requireContext())
+            etHomeSearchText.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    clDefaultLayout.visibility = View.GONE
+                    llHomeSearchLayout.visibility = View.VISIBLE
+                }
             }
-            btn2x.setOnClickListener {
-                rvMovies.layoutManager = GridLayoutManager(requireContext(), 2)
+            etHomeSearchLayoutText.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    clDefaultLayout.visibility = View.VISIBLE
+                    llHomeSearchLayout.visibility = View.GONE
+                }
             }
-            btn3x.setOnClickListener {
-                rvMovies.layoutManager = GridLayoutManager(requireContext(), 3)
-            }
+
         }
     }
 
     override fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                homePopularMoviesAdapter.updateMovies(state.popularMovies)
+                homePopularMoviesAdapter.submitList(state.popularMovies)
+                startAutoScroll()
             }
         }
 
@@ -86,4 +102,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
     }
 
+
+    private fun startAutoScroll() {
+        val runnable = object : Runnable {
+            override fun run() {
+                if (homePopularMoviesAdapter.itemCount > 0) {
+                    val nextItem =
+                        (binding.vpPopularMovies.currentItem + 1) % homePopularMoviesAdapter.itemCount
+                    binding.vpPopularMovies.setCurrentItem(nextItem, true)
+                    handler.postDelayed(this, 5000)
+                }
+            }
+        }
+        handler.post(runnable)
+    }
+
+
+    private fun navigateToDetail(movieId: Int) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
+        )
+    }
 }

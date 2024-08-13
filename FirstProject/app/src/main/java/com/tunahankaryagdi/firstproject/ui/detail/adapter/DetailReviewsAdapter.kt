@@ -7,6 +7,9 @@ import coil.load
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.ItemReviewListBinding
 import com.tunahankaryagdi.firstproject.domain.model.Review
+import com.tunahankaryagdi.firstproject.ui.base.BaseDiffUtil
+import com.tunahankaryagdi.firstproject.ui.base.calculateAndDispatch
+import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
 
 class DetailReviewsAdapter() :
     RecyclerView.Adapter<DetailReviewsAdapter.DetailReviewsViewHolder>() {
@@ -32,13 +35,15 @@ class DetailReviewsAdapter() :
             tvReviewItemContent.text = review.content
             tvReviewItemAuthorUsername.text = review.authorDetails.username
             if (review.authorDetails.avatarPath == null) ivReviewItemAuthorImage.setImageResource(R.drawable.ic_default_user)
-            else ivReviewItemAuthorImage.load("https://image.tmdb.org/t/p/original${review.authorDetails.avatarPath}")
+            else ivReviewItemAuthorImage.load(review.authorDetails.avatarPath?.getImageUrlFromPath())
         }
     }
 
-    fun updateReviews(newItems: List<Review>) {
-        reviews = newItems
-        notifyDataSetChanged()
+    fun submitList(newReviews: List<Review>) {
+        val diffCallback = BaseDiffUtil(reviews, newReviews)
+        diffCallback.calculateAndDispatch(this)
+        reviews = newReviews
     }
+
 
 }

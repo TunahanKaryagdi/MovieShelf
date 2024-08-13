@@ -12,6 +12,7 @@ import com.tunahankaryagdi.firstproject.data.source.remote.MovieService
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
 import com.tunahankaryagdi.firstproject.utils.MovieType
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -43,7 +44,7 @@ class MovieRepositoryImpl @Inject constructor(
         return movieDao.insert(movieEntity)
     }
 
-    override suspend fun getAllFavorites(): List<MovieEntity> {
+    override suspend fun getAllFavorites(): Flow<List<MovieEntity>> {
         return movieDao.getAll()
     }
 

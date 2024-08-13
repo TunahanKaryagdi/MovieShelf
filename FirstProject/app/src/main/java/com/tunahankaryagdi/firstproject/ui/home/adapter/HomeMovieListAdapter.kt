@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tunahankaryagdi.firstproject.databinding.ItemMovieListBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
 
 class HomeMovieListAdapter(
     val onClickMovie: (Int) -> Unit
@@ -26,7 +27,7 @@ class HomeMovieListAdapter(
 
     override fun onBindViewHolder(holder: HomeMovieListViewHolder, position: Int) {
         val movie = getItem(position) ?: return
-        holder.binding.ivMovie.load("https://image.tmdb.org/t/p/original${movie.backdropPath}")
+        holder.binding.ivMovie.load(movie.backdropPath?.getImageUrlFromPath())
         holder.binding.llMovieListItem.setOnClickListener {
             onClickMovie(movie.id)
         }
@@ -44,3 +45,4 @@ class HomeMovieListAdapter(
     }
 
 }
+
