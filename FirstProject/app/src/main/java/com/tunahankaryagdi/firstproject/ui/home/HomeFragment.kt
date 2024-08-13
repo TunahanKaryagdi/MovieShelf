@@ -1,20 +1,24 @@
 package com.tunahankaryagdi.firstproject.ui.home
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
+import androidx.transition.Visibility
 import com.google.android.material.tabs.TabLayout
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
@@ -22,17 +26,18 @@ import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
 import com.tunahankaryagdi.firstproject.ui.components.ViewPagerTransform
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
+import com.tunahankaryagdi.firstproject.ui.search.adapter.SearchMovieListAdapter
 import com.tunahankaryagdi.firstproject.utils.HomeTab
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override val viewModel: HomeViewModel by viewModels()
     private lateinit var homeMovieListAdapter: HomeMovieListAdapter
     private lateinit var homePopularMoviesAdapter: HomePopularMoviesAdapter
+    private lateinit var searchMovieListAdapter: SearchMovieListAdapter
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -46,8 +51,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun setupViews() {
         homeMovieListAdapter = HomeMovieListAdapter(onClickMovie = ::navigateToDetail)
-        homePopularMoviesAdapter = HomePopularMoviesAdapter(onClickPopularMovie = ::navigateToDetail)
-
+        homePopularMoviesAdapter =
+            HomePopularMoviesAdapter(onClickPopularMovie = ::navigateToDetail)
+        searchMovieListAdapter = SearchMovieListAdapter(onClickMovie = ::navigateToDetail)
 
         with(binding.vpPopularMovies) {
             adapter = homePopularMoviesAdapter
@@ -58,6 +64,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
         with(binding) {
             rvMovies.adapter = homeMovieListAdapter
+            rvHomeSearch.adapter = searchMovieListAdapter
             HomeTab.entries.forEach { homeTab ->
                 binding.tlHomeTabs.addTab(binding.tlHomeTabs.newTab().setText(homeTab.resId))
             }
@@ -72,16 +79,37 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             etHomeSearchText.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    clDefaultLayout.visibility = View.GONE
-                    llHomeSearchLayout.visibility = View.VISIBLE
+                if (hasFocus){
+                    llHomeDefaultLayout.visibility = View.GONE
+                    clHomeSearchLayout.visibility = View.VISIBLE
+                }
+                else{
+                    llHomeDefaultLayout.visibility = View.VISIBLE
+                    clHomeSearchLayout.visibility = View.GONE
                 }
             }
-            etHomeSearchLayoutText.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    clDefaultLayout.visibility = View.VISIBLE
-                    llHomeSearchLayout.visibility = View.GONE
+            searchMovieListAdapter.addLoadStateListener { loadStates ->
+                val refreshState = loadStates.refresh
+                with(binding) {
+                    if (refreshState is LoadState.NotLoading && searchMovieListAdapter.itemCount == 0) {
+                        rvHomeSearch.visibility = View.INVISIBLE
+                        llHomeEmptyResult.visibility = View.VISIBLE
+                    } else {
+                        rvHomeSearch.visibility = View.VISIBLE
+                        llHomeEmptyResult.visibility = View.INVISIBLE
+                    }
                 }
+            }
+            etHomeSearchText.addTextChangedListener { text ->
+                if (text.toString().isBlank()) {
+                    llHomeDefaultLayout.visibility = View.VISIBLE
+                    clHomeSearchLayout.visibility = View.GONE
+                }
+                viewModel.getMoviesBySearch(text.toString())
+            }
+
+            ivOptions.setOnClickListener {
+                setupPopupMenu()
             }
 
         }
@@ -98,6 +126,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 homeMovieListAdapter.submitData(state.movies)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                searchMovieListAdapter.submitData(state.searchMovies)
             }
         }
     }
@@ -122,5 +156,38 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToDetailFragment(movieId)
         )
+    }
+
+    private fun setupPopupMenu() {
+        val inflater = requireActivity().layoutInflater
+        val popupView = inflater.inflate(R.layout.popup_custom, null)
+
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        popupWindow.setBackgroundDrawable(null)
+        popupWindow.isOutsideTouchable = true
+        popupWindow.isFocusable = true
+        popupWindow.showAsDropDown(binding.ivOptions, 0, 0)
+
+        popupView.findViewById<TextView>(R.id.linear).setOnClickListener {
+            binding.rvMovies.layoutManager = LinearLayoutManager(requireContext())
+            popupWindow.dismiss()
+        }
+
+        popupView.findViewById<TextView>(R.id.grid2).setOnClickListener {
+            binding.rvMovies.layoutManager = GridLayoutManager(requireContext(),2)
+            popupWindow.dismiss()
+        }
+
+        popupView.findViewById<TextView>(R.id.grid3).setOnClickListener {
+            binding.rvMovies.layoutManager = GridLayoutManager(requireContext(),3)
+            popupWindow.dismiss()
+        }
+
     }
 }
