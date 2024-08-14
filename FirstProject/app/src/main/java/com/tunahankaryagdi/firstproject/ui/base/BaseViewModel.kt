@@ -1,25 +1,29 @@
 package com.tunahankaryagdi.firstproject.ui.base
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tunahankaryagdi.firstproject.ui.home.HomeUiState
 import com.tunahankaryagdi.firstproject.ui.search.SearchUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<T : BaseUiState> : ViewModel() {
 
-    protected val _uiState: MutableStateFlow<T> = MutableStateFlow<T>(createInitialState())
-    val uiState: StateFlow<T> get() = _uiState
+    private val initialState: T by lazy { createInitialState() }
+
+    private val _uiState: MutableStateFlow<T> = MutableStateFlow(initialState)
+    val uiState: StateFlow<T>  = _uiState.asStateFlow()
 
     protected abstract fun createInitialState(): T
 
-    protected fun setLoading(isLoading: Boolean) {
-        _uiState.value = _uiState.value.updateLoading(isLoading) as T
-    }
+    fun getCurrentState(): T = _uiState.value
 
-    private fun BaseUiState.updateLoading(isLoading: Boolean): BaseUiState {
-        return when (this) {
-            is SearchUiState -> this.copy(isLoading = isLoading)
-            else -> this
+    fun setState(state: T) {
+        viewModelScope.launch {
+            _uiState.emit(state)
         }
     }
 

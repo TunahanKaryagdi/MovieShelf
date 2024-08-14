@@ -22,6 +22,10 @@
     <string name="are_you_sure">Are you sure you want to delete this item?</string>
     <string name="cancel">Cancel</string>
     <string name="favorite_not_found">There is no movie yet!</string>
+    <string name="successfully_saved">Successfully saved</string>
+    <string name="successfully_deleted">Successfully deleted</string>
+    <string name="minutes">%1$s minutes</string>
+    <string name="similars">Similars</string>
 
 
 </resources>

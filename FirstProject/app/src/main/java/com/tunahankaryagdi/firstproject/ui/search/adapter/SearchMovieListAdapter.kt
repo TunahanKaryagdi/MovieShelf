@@ -32,6 +32,7 @@ class SearchMovieListAdapter(
             ivSearchItemImage.load(movie.backdropPath?.getImageUrlFromPath())
             tvSearchItemTitle.text = movie.title
             tvSearchItemDate.text = movie.releaseDate
+            if (movie.backdropPath == null) ivSearchItemImage.setImageResource(R.drawable.bg_rounded_corner_small)
             if (movie.adult) tvSearchItemAdult.setText(R.string.adult_content) else tvSearchItemAdult.setText(R.string.all_ages)
             tvSearchItemPopularity.text = holder.itemView.context.getString(R.string.popularity,movie.popularity)
             tvSearchItemRank.text = movie.voteAverage.toString()

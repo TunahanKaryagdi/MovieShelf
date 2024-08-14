@@ -1,6 +1,5 @@
 package com.tunahankaryagdi.firstproject.domain.model
 
-import com.google.gson.annotations.SerializedName
 
 data class Review(
     val author: String,

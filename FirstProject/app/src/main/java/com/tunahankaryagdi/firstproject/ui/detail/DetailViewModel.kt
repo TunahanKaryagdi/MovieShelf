@@ -3,12 +3,15 @@ package com.tunahankaryagdi.firstproject.ui.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
+import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.model.MovieDetail
 import com.tunahankaryagdi.firstproject.domain.model.Review
 import com.tunahankaryagdi.firstproject.domain.use_case.AddToFavoritesUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.CheckIsFavoriteUseCase
+import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetDetailByMovieIdUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetReviewsUseCase
+import com.tunahankaryagdi.firstproject.domain.use_case.GetSimilarMoviesUseCase
 import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
 import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
 import com.tunahankaryagdi.firstproject.utils.DetailTab
@@ -24,64 +27,88 @@ class DetailViewModel @Inject constructor(
     private val getDetailByMovieIdUseCase: GetDetailByMovieIdUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
+    private val getSimilarMoviesUseCase: GetSimilarMoviesUseCase,
     private val checkIsFavoriteUseCase: CheckIsFavoriteUseCase,
-    savedStateHandle: SavedStateHandle
+    private val deleteFavoriteMovieUseCase: DeleteFavoriteMovieUseCase,
 ) : BaseViewModel<DetailUiState>() {
 
     override fun createInitialState(): DetailUiState = DetailUiState()
 
-    init {
-        savedStateHandle.get<Int>("movieId")?.let { movieId ->
-            init(movieId)
-        }
-    }
 
-
-    fun init(movieId: Int){
-        getDetailByMovieId(movieId)
-        getReviewsByMovieId(movieId)
+    fun init(movieId: Int, onError: (String)-> Unit) {
+        getDetailByMovieId(movieId, onError)
+        getReviewsByMovieId(movieId,onError)
+        getSimilarMoviesByMovieId(movieId,onError)
         checkIsFavorite(movieId)
     }
 
-    private fun getDetailByMovieId(movieId: Int) {
+    private fun getDetailByMovieId(movieId: Int,onError: (String)-> Unit) {
+        setState(getCurrentState().copy(isLoading = true))
         viewModelScope.launch {
             getDetailByMovieIdUseCase.invoke(movieId).collectAndHandle(
                 scope = this,
                 onSuccess = { data ->
-                    _uiState.update { current ->
-                        current.copy(
-                            movieDetail = data,
-                        )
-                    }
+                    setState(getCurrentState().copy(movieDetail = data, isLoading = false))
                 },
+                onError = { error ->
+                    onError(error.toString())
+                }
             )
         }
     }
 
-    private fun getReviewsByMovieId(movieId: Int) {
+    private fun getReviewsByMovieId(movieId: Int, onError: (String)-> Unit) {
         viewModelScope.launch {
             getReviewsUseCase.invoke(movieId).collectAndHandle(
                 scope = this,
                 onSuccess = { data ->
-                    _uiState.update { current ->
-                        current.copy(
-                            reviews = data
-                        )
-                    }
+                    setState(getCurrentState().copy(reviews = data))
                 },
-                onError = {}
+                onError = { error ->
+                    onError(error.toString())
+                }
             )
         }
     }
 
-    fun addToFavorites(movieDetail: MovieDetail) {
+    private fun getSimilarMoviesByMovieId(movieId: Int, onError: (String)-> Unit) {
+        viewModelScope.launch {
+            getSimilarMoviesUseCase.invoke(movieId).collectAndHandle(
+                scope = this,
+                onSuccess = { data ->
+                    setState(getCurrentState().copy(similarMovies = data))
+                },
+                onError = { error ->
+                    onError(error.toString())
+                }
+            )
+        }
+    }
+
+    fun addToFavorites(movieDetail: MovieDetail, showToast: () -> Unit) {
         val movieEntity =
             MovieEntity(movieDetail.id, movieDetail.originalTitle, movieDetail.backdropPath)
-
         viewModelScope.launch {
             addToFavoritesUseCase.invoke(movieEntity).collectAndHandle(
                 scope = this,
-                onSuccess = { checkIsFavorite(movieDetail.id) }
+                onSuccess = {
+                    checkIsFavorite(movieDetail.id)
+                    showToast()
+                }
+            )
+        }
+    }
+
+    fun deleteFavorite(movieDetail: MovieDetail, showToast: () -> Unit) {
+        val movieEntity =
+            MovieEntity(movieDetail.id, movieDetail.originalTitle, movieDetail.backdropPath)
+        viewModelScope.launch {
+            deleteFavoriteMovieUseCase.invoke(movieEntity).collectAndHandle(
+                scope = this,
+                onSuccess = {
+                    checkIsFavorite(movieDetail.id)
+                    showToast()
+                }
             )
         }
     }
@@ -91,32 +118,27 @@ class DetailViewModel @Inject constructor(
             checkIsFavoriteUseCase.invoke(movieId).collectAndHandle(
                 scope = this,
                 onSuccess = { data ->
-                    _uiState.update { current ->
-                        current.copy(
-                            isFavorite = data
-                        )
-                    }
+                    setState(getCurrentState().copy(isFavorite = data))
+
                 }
             )
         }
     }
 
     fun setTab(tab: DetailTab) {
-        if (tab == _uiState.value.selectedTab) return
-        _uiState.update { current ->
-            current.copy(
-                selectedTab = tab
-            )
-        }
+        if (tab == getCurrentState().selectedTab) return
+        setState(getCurrentState().copy(selectedTab = tab))
+
     }
 
 
 }
 
 data class DetailUiState(
-    override val isLoading: Boolean = false,
+    val isLoading: Boolean = false,
     val movieDetail: MovieDetail? = null,
     val reviews: List<Review> = emptyList(),
+    val similarMovies: List<Movie> = emptyList(),
     val selectedTab: DetailTab = DetailTab.ABOUT_MOVIE,
     val isFavorite: Boolean = false
-) : BaseUiState()
+) : BaseUiState

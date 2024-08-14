@@ -20,22 +20,16 @@ class SearchViewModel @Inject constructor(
     override fun createInitialState(): SearchUiState = SearchUiState()
 
     fun getMoviesBySearch(searchText: String) {
-        setLoading(true)
+        setState(getCurrentState().copy(isLoading = true))
         viewModelScope.launch {
             getMoviesBySearchUseCase.invoke(searchText).collectLatest { pagingData ->
-                _uiState.update { current ->
-                    current.copy(
-                        movies = pagingData,
-                        isLoading = false
-                    )
-                }
+                setState(getCurrentState().copy(movies = pagingData, isLoading = false))
             }
         }
-        setLoading(true)
     }
 }
 
 data class SearchUiState(
-    override val isLoading: Boolean = false,
+    val isLoading: Boolean = false,
     val movies: PagingData<SearchMovie> = PagingData.empty()
-) : BaseUiState()
+) : BaseUiState

@@ -9,14 +9,14 @@ data class MovieDetailDto(
     val id: Int,
     val adult: Boolean,
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String?,
     @SerializedName("belongs_to_collection")
     val collectionInfo: CollectionInfoDto?,
     @SerializedName("original_title")
     val originalTitle: String,
     val overview: String,
     @SerializedName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerializedName("release_date")
     val releaseDate: String,
     @SerializedName("vote_average")
@@ -30,9 +30,9 @@ data class CollectionInfoDto(
     val id: Int,
     val name: String,
     @SerializedName("poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String?,
 )
 
 data class GenreDto(

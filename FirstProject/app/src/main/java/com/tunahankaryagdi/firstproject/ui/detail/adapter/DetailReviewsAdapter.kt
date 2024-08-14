@@ -35,7 +35,7 @@ class DetailReviewsAdapter() :
             tvReviewItemContent.text = review.content
             tvReviewItemAuthorUsername.text = review.authorDetails.username
             if (review.authorDetails.avatarPath == null) ivReviewItemAuthorImage.setImageResource(R.drawable.ic_default_user)
-            else ivReviewItemAuthorImage.load(review.authorDetails.avatarPath?.getImageUrlFromPath())
+            else ivReviewItemAuthorImage.load(review.authorDetails.avatarPath.getImageUrlFromPath())
         }
     }
 

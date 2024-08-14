@@ -3,6 +3,7 @@ package com.tunahankaryagdi.firstproject.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
+import com.tunahankaryagdi.firstproject.data.model.entity.toMovie
 import com.tunahankaryagdi.firstproject.domain.error_handling.Resource
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
@@ -25,29 +26,17 @@ class FavoriteViewModel @Inject constructor(
 ) : BaseViewModel<FavoriteUiState>() {
     override fun createInitialState(): FavoriteUiState = FavoriteUiState()
 
-    init {
-        getFavoriteMovies()
-    }
 
-    private fun getFavoriteMovies() {
+    fun getFavoriteMovies() {
         viewModelScope.launch {
-            when(val response = getFavoriteMoviesUseCase.invoke()){
-                is Resource.Success->{
-                    response.data.collectLatest { movies->
-                        _uiState.update { current ->
-                            current.copy(
-                                filteredMovies = movies,
-                                movies = movies
-                            )
-                        }
-                    }
-                }
-                else->{}
+            getFavoriteMoviesUseCase.invoke().collect {
+                val movies = it.map { it.toMovie() }
+                setState(getCurrentState().copy(movies = movies, filteredMovies = movies))
             }
         }
     }
 
-    fun deleteFavoriteMovie(movie: Movie) {
+    fun deleteFavoriteMovie(movie: Movie, showToast: () -> Unit) {
         val movieEntity =
             MovieEntity(movie.id, movie.title, movie.backdropPath)
         viewModelScope.launch {
@@ -55,25 +44,24 @@ class FavoriteViewModel @Inject constructor(
                 this,
                 onSuccess = {
                     getFavoriteMovies()
+                    showToast()
                 }
             )
         }
     }
 
     fun filterMovies(searchText: String) {
-        val filteredMovies = _uiState.value.movies.filter {
+        val state = getCurrentState()
+        val filteredMovies = state.movies.filter {
             it.title.contains(searchText, ignoreCase = true)
         }
-        _uiState.update { current ->
-            current.copy(
-                filteredMovies = filteredMovies
-            )
-        }
+        setState(getCurrentState().copy(filteredMovies = filteredMovies))
+
     }
 }
 
 data class FavoriteUiState(
-    override val isLoading: Boolean = false,
+    val isLoading: Boolean = false,
     val movies: List<Movie> = emptyList(),
     val filteredMovies: List<Movie> = emptyList(),
-) : BaseUiState()
+) : BaseUiState

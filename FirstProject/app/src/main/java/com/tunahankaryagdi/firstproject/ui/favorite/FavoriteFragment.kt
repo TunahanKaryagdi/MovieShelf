@@ -7,10 +7,12 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentFavoriteBinding
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
 import com.tunahankaryagdi.firstproject.ui.components.CustomDialog
+import com.tunahankaryagdi.firstproject.ui.components.CustomToast
 import com.tunahankaryagdi.firstproject.ui.favorite.adapter.FavoriteListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -28,6 +30,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding, FavoriteViewModel
         return FragmentFavoriteBinding.inflate(layoutInflater)
     }
 
+
     override fun setupViews() {
         favoriteListAdapter = FavoriteListAdapter(
             onClickDeleteItem = ::onClickDeleteItem,
@@ -43,11 +46,13 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding, FavoriteViewModel
                 viewModel.filterMovies(text.toString())
             }
         }
+        viewModel.getFavoriteMovies()
     }
 
     override fun observeUiState() {
+
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collectLatest { state ->
+            viewModel.uiState.collect { state ->
                 favoriteListAdapter.submitList(state.filteredMovies)
                 with(binding) {
                     if (state.filteredMovies.isEmpty()) {
@@ -65,7 +70,13 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding, FavoriteViewModel
     private fun onClickDeleteItem(movie: Movie) {
         val dialog = CustomDialog(
             onConfirm = {
-                viewModel.deleteFavoriteMovie(movie)
+                viewModel.deleteFavoriteMovie(
+                    movie = movie,
+                    showToast = {
+                        val customToast = CustomToast(requireContext())
+                        customToast.show(getString(R.string.successfully_deleted))
+                    }
+                )
             },
         )
         dialog.show(parentFragmentManager, "Custom Dialog")

@@ -1,5 +1,6 @@
 package com.tunahankaryagdi.firstproject.domain.use_case
 
+import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.data.model.entity.toMovie
 import com.tunahankaryagdi.firstproject.domain.error_handling.DataError
 import com.tunahankaryagdi.firstproject.domain.error_handling.Resource
@@ -12,16 +13,8 @@ import javax.inject.Inject
 
 class GetFavoriteMoviesUseCase @Inject constructor(private val movieRepository: MovieRepository) {
 
-    suspend operator fun invoke(): Resource<Flow<List<Movie>>,DataError.Local> {
-        return try {
-            val response = movieRepository.getAllFavorites().map { movieEntities ->
-                movieEntities.map { it.toMovie() }
-            }
-            Resource.Success(response)
-        }
-        catch (e: Exception){
-            Resource.Error(DataError.Local.DISK_FULL)
-        }
+    suspend operator fun invoke(): Flow<List<MovieEntity>>{
+        return  movieRepository.getAllFavorites()
     }
 
 }

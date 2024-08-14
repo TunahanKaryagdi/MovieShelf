@@ -2,6 +2,7 @@ package com.tunahankaryagdi.firstproject.data.source.remote
 
 import com.tunahankaryagdi.firstproject.data.model.NowPlayingMoviesResponse
 import com.tunahankaryagdi.firstproject.data.model.PopularMoviesResponse
+import com.tunahankaryagdi.firstproject.data.model.SimilarMoviesResponse
 import com.tunahankaryagdi.firstproject.data.model.TopRatedResponse
 import com.tunahankaryagdi.firstproject.data.model.UpcomingResponse
 import com.tunahankaryagdi.firstproject.data.model.dto.MovieDetailDto
@@ -24,5 +25,9 @@ interface MovieService {
 
     @GET("movie/{movieId}")
     suspend fun getDetailByMovieId(@Path("movieId") movieId: Int): MovieDetailDto
+
+    @GET("movie/{movieId}/similar")
+    suspend fun getSimilarMoviesByMovieId(@Path("movieId") movieId: Int): SimilarMoviesResponse
+
 }
 

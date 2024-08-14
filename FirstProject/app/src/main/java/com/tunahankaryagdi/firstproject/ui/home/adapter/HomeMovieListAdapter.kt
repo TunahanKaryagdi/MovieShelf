@@ -27,10 +27,14 @@ class HomeMovieListAdapter(
 
     override fun onBindViewHolder(holder: HomeMovieListViewHolder, position: Int) {
         val movie = getItem(position) ?: return
-        holder.binding.ivMovie.load(movie.backdropPath?.getImageUrlFromPath())
-        holder.binding.llMovieListItem.setOnClickListener {
-            onClickMovie(movie.id)
+        with(holder.binding){
+            ivMovie.load(movie.backdropPath?.getImageUrlFromPath())
+            tvMovie.text = movie.title
+            llMovieListItem.setOnClickListener {
+                onClickMovie(movie.id)
+            }
         }
+
     }
 
 

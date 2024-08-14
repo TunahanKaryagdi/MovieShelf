@@ -3,13 +3,11 @@ package com.tunahankaryagdi.firstproject.ui.home
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,7 +16,6 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.google.android.material.tabs.TabLayout
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
@@ -78,16 +75,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-            etHomeSearchText.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus){
-                    llHomeDefaultLayout.visibility = View.GONE
-                    clHomeSearchLayout.visibility = View.VISIBLE
-                }
-                else{
-                    llHomeDefaultLayout.visibility = View.VISIBLE
-                    clHomeSearchLayout.visibility = View.GONE
-                }
-            }
+
+//            etHomeSearchText.setOnFocusChangeListener { _, hasFocus ->
+//                if (hasFocus) {
+//                    llHomeDefaultLayout.visibility = View.GONE
+//                    clHomeSearchLayout.visibility = View.VISIBLE
+//                } else {
+//                    llHomeDefaultLayout.visibility = View.VISIBLE
+//                    clHomeSearchLayout.visibility = View.GONE
+//                }
+//            }
             searchMovieListAdapter.addLoadStateListener { loadStates ->
                 val refreshState = loadStates.refresh
                 with(binding) {
@@ -101,9 +98,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             }
             etHomeSearchText.addTextChangedListener { text ->
+
                 if (text.toString().isBlank()) {
+                    if (etHomeSearchText.hasFocus()){
+                        rvHomeSearch.visibility = View.INVISIBLE
+                        clHomeSearchLayout.visibility = View.INVISIBLE
+                    }
                     llHomeDefaultLayout.visibility = View.VISIBLE
                     clHomeSearchLayout.visibility = View.GONE
+                }
+                else {
+                    llHomeDefaultLayout.visibility = View.INVISIBLE
+                    clHomeSearchLayout.visibility = View.VISIBLE
                 }
                 viewModel.getMoviesBySearch(text.toString())
             }
@@ -116,13 +122,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     override fun observeUiState() {
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
+                with(binding) {
+                    pbHome.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
+                }
                 homePopularMoviesAdapter.submitList(state.popularMovies)
                 startAutoScroll()
             }
         }
 
+
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewModel.uiState.collect { state ->
+//                homePopularMoviesAdapter.submitList(state.popularMovies)
+//                startAutoScroll()
+//            }
+//        }
+//
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 homeMovieListAdapter.submitData(state.movies)
@@ -160,7 +178,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private fun setupPopupMenu() {
         val inflater = requireActivity().layoutInflater
-        val popupView = inflater.inflate(R.layout.popup_custom, null)
+        val popupView = inflater.inflate(R.layout.custom_popup, null)
 
         val popupWindow = PopupWindow(
             popupView,
@@ -180,12 +198,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
         popupView.findViewById<TextView>(R.id.grid2).setOnClickListener {
-            binding.rvMovies.layoutManager = GridLayoutManager(requireContext(),2)
+            binding.rvMovies.layoutManager = GridLayoutManager(requireContext(), 2)
             popupWindow.dismiss()
         }
 
         popupView.findViewById<TextView>(R.id.grid3).setOnClickListener {
-            binding.rvMovies.layoutManager = GridLayoutManager(requireContext(),3)
+            binding.rvMovies.layoutManager = GridLayoutManager(requireContext(), 3)
             popupWindow.dismiss()
         }
 

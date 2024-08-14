@@ -1,182 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:id="@+id/llTopBar"
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_margin="@dimen/margin_medium">
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/llTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_margin="@dimen/margin_medium">
+
+            <ImageView
+                android:id="@+id/ivBackToHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                style="@style/IconStyle"/>
+
+            <TextView
+                android:id="@+id/tvDetail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/detail"
+                style="@style/TextDefault"
+                android:textAlignment="center"/>
+
+            <ImageView
+                android:id="@+id/ivSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bookmark"
+                style="@style/IconStyle"/>
+
+        </LinearLayout>
+
+
 
         <ImageView
-            android:id="@+id/ivBackToHome"
+            android:id="@+id/ivPoster"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/llTopBar"
+            android:layout_marginTop="@dimen/margin_medium"/>
+
+        <LinearLayout
+            android:id="@+id/llRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_back"
-            style="@style/IconStyle"/>
+            android:layout_margin="@dimen/margin_medium"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
+            app:layout_constraintEnd_toEndOf="@+id/ivPoster"
+            android:background="@drawable/bg_rounded_corner_small"
+            android:padding="@dimen/padding_small">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_star"
+                android:background="@android:color/transparent"/>
+
+            <TextView
+                android:id="@+id/tvMovieRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivMovieDetail"
+            android:layout_width="95dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
+            app:layout_constraintStart_toStartOf="@id/ivPoster"
+            app:layout_constraintTop_toBottomOf="@+id/ivPoster"
+            android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/tvDetail"
+            android:id="@+id/tvMovieTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/detail"
-            style="@style/TextDefault"
-            android:textAlignment="center"/>
+            app:layout_constraintStart_toEndOf="@id/ivMovieDetail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivPoster"
+            android:layout_margin="@dimen/margin_medium"
+            style="@style/TextLarge"/>
 
-        <ImageView
-            android:id="@+id/ivSave"
+        <LinearLayout
+            android:id="@+id/llMovieInfos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_bookmark"
-            style="@style/IconStyle"/>
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivMovieDetail">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextSmall"/>
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/white"/>
 
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextSmall"/>
 
-    <ImageView
-        android:id="@+id/ivPoster"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/llTopBar"
-        android:layout_marginTop="@dimen/margin_medium"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/white"/>
 
-    <LinearLayout
-        android:id="@+id/llRate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_medium"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
-        app:layout_constraintEnd_toEndOf="@+id/ivPoster"
-        android:background="@drawable/bg_rounded_corner_small"
-        android:padding="@dimen/padding_small">
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextSmall"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/ic_star"
-            android:background="@android:color/transparent"/>
+        </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tlDetailTabs"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@+id/llMovieInfos"
+            android:layout_marginTop="20dp"
+            style="@style/DetailTabStyle"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvReviewList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_margin="@dimen/margin_medium"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSimilarMovieList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/margin_medium"/>
 
         <TextView
-            android:id="@+id/tvMovieRate"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvAboutMovie"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="9.5"
-            android:textColor="@color/white"
-            android:background="@android:color/transparent"/>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ivMovieDetail"
-        android:layout_width="95dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ivPoster"
-        app:layout_constraintStart_toStartOf="@id/ivPoster"
-        app:layout_constraintTop_toBottomOf="@+id/ivPoster"
-        android:scaleType="centerCrop"/>
-
-    <TextView
-        android:id="@+id/tvMovieTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/ivMovieDetail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivPoster"
-        android:layout_margin="@dimen/margin_medium"
-        style="@style/TextLarge"/>
-
-    <LinearLayout
-        android:id="@+id/llMovieInfos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivMovieDetail">
+            app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/TextSmall"
+            android:layout_margin="@dimen/margin_medium"/>
 
         <TextView
-            android:id="@+id/tvYear"
+            android:id="@+id/tvEmptyReview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextSmall"/>
+            app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/no_reviews_yet"
+            style="@style/TextLarge"
+            android:visibility="invisible"/>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@color/white"/>
-
-        <TextView
-            android:id="@+id/tvDuration"
+        <ProgressBar
+            android:id="@+id/pbDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextSmall"/>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@color/white"/>
-
-        <TextView
-            android:id="@+id/tvType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextSmall"/>
-
-    </LinearLayout>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tlDetailTabs"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/llMovieInfos"
-        android:layout_marginTop="20dp"
-        style="@style/DetailTabStyle"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvReviewList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_margin="@dimen/margin_medium"/>
-
-    <TextView
-        android:id="@+id/tvAboutMovie"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/TextSmall"
-        android:layout_margin="@dimen/margin_medium"/>
-
-    <TextView
-        android:id="@+id/tvEmptyReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tlDetailTabs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="@string/no_reviews_yet"
-        style="@style/TextLarge"
-        android:visibility="invisible"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="invisible"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

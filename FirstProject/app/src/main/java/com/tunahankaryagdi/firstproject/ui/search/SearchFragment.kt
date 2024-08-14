@@ -64,6 +64,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                 searchMovieListAdapter.submitData(state.movies)
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                with(binding){
+                    pbSearch.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
+                }
+            }
+        }
     }
 
 }

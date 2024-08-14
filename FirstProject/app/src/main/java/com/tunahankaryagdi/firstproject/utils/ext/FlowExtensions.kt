@@ -13,7 +13,7 @@ inline fun <T> Flow<Resource<T,DataError>>.collectAndHandle(
     crossinline onError: (DataError) -> Unit = {}
 ) {
     scope.launch {
-        collectLatest { resource ->
+        collect { resource ->
             when (resource) {
                 is Resource.Success -> onSuccess(resource.data)
                 is Resource.Error -> onError(resource.error)

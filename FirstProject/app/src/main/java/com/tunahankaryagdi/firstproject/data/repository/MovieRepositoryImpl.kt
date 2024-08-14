@@ -3,6 +3,7 @@ package com.tunahankaryagdi.firstproject.data.repository
 import androidx.paging.PagingSource
 import com.tunahankaryagdi.firstproject.data.model.NowPlayingMoviesResponse
 import com.tunahankaryagdi.firstproject.data.model.PopularMoviesResponse
+import com.tunahankaryagdi.firstproject.data.model.SimilarMoviesResponse
 import com.tunahankaryagdi.firstproject.data.model.TopRatedResponse
 import com.tunahankaryagdi.firstproject.data.model.UpcomingResponse
 import com.tunahankaryagdi.firstproject.data.model.dto.MovieDetailDto
@@ -38,6 +39,10 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getDetailByMovieId(movieId: Int): MovieDetailDto {
         return movieService.getDetailByMovieId(movieId)
+    }
+
+    override suspend fun getSimilarMoviesByMovieId(movieId: Int): SimilarMoviesResponse {
+        return movieService.getSimilarMoviesByMovieId(movieId)
     }
 
     override suspend fun addToFavorites(movieEntity: MovieEntity) {
