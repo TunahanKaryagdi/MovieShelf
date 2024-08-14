@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +15,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tunahankaryagdi.firstproject.R
 import com.tunahankaryagdi.firstproject.databinding.FragmentHomeBinding
@@ -24,7 +24,7 @@ import com.tunahankaryagdi.firstproject.ui.components.ViewPagerTransform
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomeMovieListAdapter
 import com.tunahankaryagdi.firstproject.ui.home.adapter.HomePopularMoviesAdapter
 import com.tunahankaryagdi.firstproject.ui.search.adapter.SearchMovieListAdapter
-import com.tunahankaryagdi.firstproject.utils.HomeTab
+import com.tunahankaryagdi.firstproject.utils.enums.HomeTab
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,7 +38,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-
     override fun inflateBinding(
         layoutInflater: LayoutInflater,
         container: ViewGroup?
@@ -50,8 +49,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         homeMovieListAdapter = HomeMovieListAdapter(onClickMovie = ::navigateToDetail)
         homePopularMoviesAdapter =
             HomePopularMoviesAdapter(onClickPopularMovie = ::navigateToDetail)
-        searchMovieListAdapter = SearchMovieListAdapter(onClickMovie = ::navigateToDetail)
 
+        searchMovieListAdapter = SearchMovieListAdapter(onClickMovie = ::navigateToDetail)
         with(binding.vpPopularMovies) {
             adapter = homePopularMoviesAdapter
             offscreenPageLimit = 3
@@ -61,6 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
         with(binding) {
             rvMovies.adapter = homeMovieListAdapter
+            rvMovies.setHasFixedSize(false)
             rvHomeSearch.adapter = searchMovieListAdapter
             HomeTab.entries.forEach { homeTab ->
                 binding.tlHomeTabs.addTab(binding.tlHomeTabs.newTab().setText(homeTab.resId))
@@ -76,39 +76,29 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
 
-//            etHomeSearchText.setOnFocusChangeListener { _, hasFocus ->
-//                if (hasFocus) {
-//                    llHomeDefaultLayout.visibility = View.GONE
-//                    clHomeSearchLayout.visibility = View.VISIBLE
-//                } else {
-//                    llHomeDefaultLayout.visibility = View.VISIBLE
-//                    clHomeSearchLayout.visibility = View.GONE
-//                }
-//            }
             searchMovieListAdapter.addLoadStateListener { loadStates ->
                 val refreshState = loadStates.refresh
                 with(binding) {
                     if (refreshState is LoadState.NotLoading && searchMovieListAdapter.itemCount == 0) {
-                        rvHomeSearch.visibility = View.INVISIBLE
+                        rvHomeSearch.visibility = View.GONE
                         llHomeEmptyResult.visibility = View.VISIBLE
                     } else {
                         rvHomeSearch.visibility = View.VISIBLE
-                        llHomeEmptyResult.visibility = View.INVISIBLE
+                        llHomeEmptyResult.visibility = View.GONE
                     }
                 }
             }
             etHomeSearchText.addTextChangedListener { text ->
 
                 if (text.toString().isBlank()) {
-                    if (etHomeSearchText.hasFocus()){
-                        rvHomeSearch.visibility = View.INVISIBLE
-                        clHomeSearchLayout.visibility = View.INVISIBLE
+                    if (etHomeSearchText.hasFocus()) {
+                        rvHomeSearch.visibility = View.GONE
+                        clHomeSearchLayout.visibility = View.GONE
                     }
                     llHomeDefaultLayout.visibility = View.VISIBLE
                     clHomeSearchLayout.visibility = View.GONE
-                }
-                else {
-                    llHomeDefaultLayout.visibility = View.INVISIBLE
+                } else {
+                    llHomeDefaultLayout.visibility = View.GONE
                     clHomeSearchLayout.visibility = View.VISIBLE
                 }
                 viewModel.getMoviesBySearch(text.toString())
@@ -117,33 +107,39 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             ivOptions.setOnClickListener {
                 setupPopupMenu()
             }
+            vpPopularMovies.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    handler.removeCallbacks(sliderRunnable)
+                    handler.postDelayed(sliderRunnable, 3000)
+                }
+            })
 
         }
     }
 
-    override fun observeUiState() {
+    private val sliderRunnable = Runnable {
+        val currentItem = binding.vpPopularMovies.currentItem
+        val itemCount = binding.vpPopularMovies.adapter?.itemCount ?: 1
+        val nextItem = if (currentItem + 1 >= itemCount) 0 else currentItem + 1
+        binding.vpPopularMovies.setCurrentItem(nextItem, true)
+    }
 
+    override fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
                 with(binding) {
                     pbHome.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
                 }
                 homePopularMoviesAdapter.submitList(state.popularMovies)
-                startAutoScroll()
             }
         }
 
-
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewModel.uiState.collect { state ->
-//                homePopularMoviesAdapter.submitList(state.popularMovies)
-//                startAutoScroll()
-//            }
-//        }
-//
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 homeMovieListAdapter.submitData(state.movies)
+
             }
         }
 
@@ -152,21 +148,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 searchMovieListAdapter.submitData(state.searchMovies)
             }
         }
-    }
-
-
-    private fun startAutoScroll() {
-        val runnable = object : Runnable {
-            override fun run() {
-                if (homePopularMoviesAdapter.itemCount > 0) {
-                    val nextItem =
-                        (binding.vpPopularMovies.currentItem + 1) % homePopularMoviesAdapter.itemCount
-                    binding.vpPopularMovies.setCurrentItem(nextItem, true)
-                    handler.postDelayed(this, 5000)
-                }
-            }
-        }
-        handler.post(runnable)
     }
 
 
@@ -208,4 +189,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
     }
+
 }

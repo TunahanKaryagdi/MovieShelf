@@ -16,8 +16,9 @@ import com.tunahankaryagdi.firstproject.ui.base.BaseFragment
 import com.tunahankaryagdi.firstproject.ui.components.CustomToast
 import com.tunahankaryagdi.firstproject.ui.detail.adapter.DetailReviewsAdapter
 import com.tunahankaryagdi.firstproject.ui.detail.adapter.DetailSimilarMoviesAdapter
-import com.tunahankaryagdi.firstproject.utils.DetailTab
+import com.tunahankaryagdi.firstproject.utils.enums.DetailTab
 import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
+import com.tunahankaryagdi.firstproject.utils.ext.loadImage
 import com.tunahankaryagdi.firstproject.utils.ext.toFormattedString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -107,13 +108,13 @@ class DetailFragment : BaseFragment<FragmentDetailBinding, DetailViewModel>() {
     private fun setUiElements(movieDetail: MovieDetail) {
         with(binding) {
             tvType.text = movieDetail.genres[0].name
-            tvDuration.text = getString(R.string.minutes,movieDetail.runtime.toString())
+            tvDuration.text = getString(R.string.minutes, movieDetail.runtime.toString())
             tvMovieTitle.text = movieDetail.originalTitle
             tvYear.text = movieDetail.releaseDate
             tvAboutMovie.text = movieDetail.overview
             tvMovieRate.text = movieDetail.voteAverage.toFormattedString()
-            ivPoster.load(movieDetail.posterPath?.getImageUrlFromPath())
-            ivMovieDetail.load(movieDetail.backdropPath?.getImageUrlFromPath())
+            ivPoster.loadImage(movieDetail.posterPath?.getImageUrlFromPath())
+            ivMovieDetail.loadImage(movieDetail.backdropPath?.getImageUrlFromPath())
             ivSave.setOnClickListener {
                 if (viewModel.uiState.value.isFavorite) {
                     viewModel.deleteFavorite(
@@ -123,8 +124,7 @@ class DetailFragment : BaseFragment<FragmentDetailBinding, DetailViewModel>() {
                             customToast.show(getString(R.string.successfully_deleted))
                         }
                     )
-                }
-                else {
+                } else {
                     viewModel.addToFavorites(
                         movieDetail = movieDetail,
                         showToast = {

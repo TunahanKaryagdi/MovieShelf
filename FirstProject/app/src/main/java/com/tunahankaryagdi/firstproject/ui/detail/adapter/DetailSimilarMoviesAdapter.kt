@@ -12,6 +12,7 @@ import com.tunahankaryagdi.firstproject.domain.model.Review
 import com.tunahankaryagdi.firstproject.ui.base.BaseDiffUtil
 import com.tunahankaryagdi.firstproject.ui.base.calculateAndDispatch
 import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
+import com.tunahankaryagdi.firstproject.utils.ext.loadImage
 
 class DetailSimilarMoviesAdapter(
     val onClickSimilarMovie: (Int) -> Unit
@@ -35,7 +36,7 @@ class DetailSimilarMoviesAdapter(
     override fun onBindViewHolder(holder: DetailSimilarMoviesViewHolder, position: Int) {
         val movie = movies[position]
         with(holder.binding){
-            ivSimilarMovie.load(movie.backdropPath?.getImageUrlFromPath())
+            ivSimilarMovie.loadImage(movie.backdropPath?.getImageUrlFromPath())
             tvSimilarMovie.text = movie.title
             llSimilarItem.setOnClickListener {
                 onClickSimilarMovie(movie.id)

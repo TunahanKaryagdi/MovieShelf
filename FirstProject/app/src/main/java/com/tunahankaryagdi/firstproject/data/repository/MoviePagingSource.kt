@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.tunahankaryagdi.firstproject.data.model.dto.toMovie
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
-import com.tunahankaryagdi.firstproject.utils.MovieType
+import com.tunahankaryagdi.firstproject.utils.enums.MovieType
 import javax.inject.Inject
 
 class MoviePagingSource @Inject constructor(

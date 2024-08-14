@@ -12,7 +12,7 @@ import com.tunahankaryagdi.firstproject.domain.use_case.GetTopRatedMoviesUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetUpcomingMoviesUseCase
 import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
 import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
-import com.tunahankaryagdi.firstproject.utils.HomeTab
+import com.tunahankaryagdi.firstproject.utils.enums.HomeTab
 import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest

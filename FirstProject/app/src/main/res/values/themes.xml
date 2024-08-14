@@ -32,7 +32,8 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="HomeTabStyle" parent="Widget.Design.TabLayout">
+    <style name="HomeTabStyle">
+        <item name="tabBackground">@color/blue</item>
         <item name="tabIndicatorColor">@color/blue</item>
         <item name="tabTextColor">@color/white</item>
         <item name="android:textSize">14sp</item>

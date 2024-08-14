@@ -64,6 +64,12 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding, FavoriteViewModel
                     }
                 }
             }
+
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                binding.pbFavorite.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
+            }
         }
     }
 

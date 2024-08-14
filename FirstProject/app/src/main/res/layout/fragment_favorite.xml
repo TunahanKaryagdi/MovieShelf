@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/favorite"
-        style="@style/TextDefault" />
+        style="@style/TextLarge" />
 
     <EditText
         android:id="@+id/etFavoriteText"
@@ -60,6 +60,16 @@
         android:layout_marginTop="@dimen/margin_medium"/>
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pbFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

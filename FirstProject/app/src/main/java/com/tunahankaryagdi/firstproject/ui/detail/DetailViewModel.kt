@@ -1,6 +1,5 @@
 package com.tunahankaryagdi.firstproject.ui.detail
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.domain.model.Movie
@@ -14,10 +13,9 @@ import com.tunahankaryagdi.firstproject.domain.use_case.GetReviewsUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetSimilarMoviesUseCase
 import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
 import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
-import com.tunahankaryagdi.firstproject.utils.DetailTab
+import com.tunahankaryagdi.firstproject.utils.enums.DetailTab
 import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

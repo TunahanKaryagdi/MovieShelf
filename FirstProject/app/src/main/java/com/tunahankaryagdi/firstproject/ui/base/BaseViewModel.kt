@@ -2,12 +2,9 @@ package com.tunahankaryagdi.firstproject.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tunahankaryagdi.firstproject.ui.home.HomeUiState
-import com.tunahankaryagdi.firstproject.ui.search.SearchUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<T : BaseUiState> : ViewModel() {

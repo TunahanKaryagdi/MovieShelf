@@ -8,7 +8,6 @@ import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
 import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

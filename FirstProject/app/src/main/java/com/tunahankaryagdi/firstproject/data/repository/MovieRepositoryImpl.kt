@@ -12,7 +12,7 @@ import com.tunahankaryagdi.firstproject.data.source.local.MovieDao
 import com.tunahankaryagdi.firstproject.data.source.remote.MovieService
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
-import com.tunahankaryagdi.firstproject.utils.MovieType
+import com.tunahankaryagdi.firstproject.utils.enums.MovieType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

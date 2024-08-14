@@ -1,10 +1,8 @@
 package com.tunahankaryagdi.firstproject.ui.favorite
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.data.model.entity.toMovie
-import com.tunahankaryagdi.firstproject.domain.error_handling.Resource
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetFavoriteMoviesUseCase
@@ -12,10 +10,6 @@ import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
 import com.tunahankaryagdi.firstproject.ui.base.BaseViewModel
 import com.tunahankaryagdi.firstproject.utils.ext.collectAndHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,10 +22,11 @@ class FavoriteViewModel @Inject constructor(
 
 
     fun getFavoriteMovies() {
+        setState(getCurrentState().copy(isLoading = true))
         viewModelScope.launch {
             getFavoriteMoviesUseCase.invoke().collect {
                 val movies = it.map { it.toMovie() }
-                setState(getCurrentState().copy(movies = movies, filteredMovies = movies))
+                setState(getCurrentState().copy(movies = movies, filteredMovies = movies, isLoading = false))
             }
         }
     }

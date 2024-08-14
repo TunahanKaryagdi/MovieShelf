@@ -1,4 +1,4 @@
-package com.tunahankaryagdi.firstproject.utils
+package com.tunahankaryagdi.firstproject.utils.enums
 
 
 enum class MovieType {

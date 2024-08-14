@@ -9,6 +9,7 @@ import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.ui.base.BaseDiffUtil
 import com.tunahankaryagdi.firstproject.ui.base.calculateAndDispatch
 import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
+import com.tunahankaryagdi.firstproject.utils.ext.loadImage
 
 class FavoriteListAdapter(
     val onClickDeleteItem: (Movie) -> Unit,
@@ -29,7 +30,7 @@ class FavoriteListAdapter(
     override fun onBindViewHolder(holder: FavoriteListViewHolder, position: Int) {
         val movie = movies[position]
         with(holder.binding){
-            ivFavoriteItemImage.load(movie.backdropPath?.getImageUrlFromPath())
+            ivFavoriteItemImage.loadImage(movie.backdropPath?.getImageUrlFromPath())
             tvFavoriteItemTitle.text = movie.title
             ivFavoriteItemDelete.setOnClickListener {
                 onClickDeleteItem(movie)

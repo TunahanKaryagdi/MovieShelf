@@ -9,11 +9,8 @@ import com.tunahankaryagdi.firstproject.data.model.UpcomingResponse
 import com.tunahankaryagdi.firstproject.data.model.dto.MovieDetailDto
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.domain.model.Movie
-import com.tunahankaryagdi.firstproject.utils.MovieType
+import com.tunahankaryagdi.firstproject.utils.enums.MovieType
 import kotlinx.coroutines.flow.Flow
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface MovieRepository {
     suspend fun getPopularMovies(page: Int = 1): PopularMoviesResponse

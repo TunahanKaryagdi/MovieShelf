@@ -65,7 +65,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
+            viewModel.uiState.collectLatest { state ->
                 with(binding){
                     pbSearch.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
                 }

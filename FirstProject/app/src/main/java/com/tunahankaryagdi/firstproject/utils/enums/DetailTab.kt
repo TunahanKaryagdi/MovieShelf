@@ -1,4 +1,4 @@
-package com.tunahankaryagdi.firstproject.utils
+package com.tunahankaryagdi.firstproject.utils.enums
 
 import com.tunahankaryagdi.firstproject.R
 

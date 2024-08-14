@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.repository.MovieRepository
-import com.tunahankaryagdi.firstproject.utils.MovieType
+import com.tunahankaryagdi.firstproject.utils.enums.MovieType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
