@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.tunahankaryagdi.firstproject.data.source.local.AppDatabase
 import com.tunahankaryagdi.firstproject.data.source.local.MovieDao
 import com.tunahankaryagdi.firstproject.data.source.remote.interceptor.HeaderInterceptor
+import com.tunahankaryagdi.firstproject.data.source.remote.interceptor.NetworkInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +19,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides
-    fun provideOkHttpClient(headerInterceptor: HeaderInterceptor): OkHttpClient =
+    fun provideOkHttpClient(headerInterceptor: HeaderInterceptor, networkInterceptor: NetworkInterceptor): OkHttpClient =
         OkHttpClient
             .Builder()
             .addInterceptor(headerInterceptor)
+            .addInterceptor(networkInterceptor)
             .build()
 
     @Provides
@@ -44,4 +46,8 @@ object NetworkModule {
 
     @Provides
     fun provideMovieDao(appDatabase: AppDatabase): MovieDao = appDatabase.movieDao()
+
+    @Provides
+    fun provideNetworkInterceptor(@ApplicationContext context: Context): NetworkInterceptor =
+        NetworkInterceptor(context)
 }

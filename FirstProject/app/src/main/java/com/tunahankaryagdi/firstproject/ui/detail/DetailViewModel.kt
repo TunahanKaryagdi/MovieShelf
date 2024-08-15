@@ -5,6 +5,7 @@ import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.model.MovieDetail
 import com.tunahankaryagdi.firstproject.domain.model.Review
+import com.tunahankaryagdi.firstproject.domain.model.toMovieEntity
 import com.tunahankaryagdi.firstproject.domain.use_case.AddToFavoritesUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.CheckIsFavoriteUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
@@ -50,6 +51,7 @@ class DetailViewModel @Inject constructor(
                 },
                 onError = { error ->
                     onError(error.toString())
+                    setState(getCurrentState().copy(isLoading = false))
                 }
             )
         }
@@ -84,10 +86,8 @@ class DetailViewModel @Inject constructor(
     }
 
     fun addToFavorites(movieDetail: MovieDetail, showToast: () -> Unit) {
-        val movieEntity =
-            MovieEntity(movieDetail.id, movieDetail.originalTitle, movieDetail.backdropPath)
         viewModelScope.launch {
-            addToFavoritesUseCase.invoke(movieEntity).collectAndHandle(
+            addToFavoritesUseCase.invoke(movieDetail.toMovieEntity()).collectAndHandle(
                 scope = this,
                 onSuccess = {
                     checkIsFavorite(movieDetail.id)
@@ -98,10 +98,9 @@ class DetailViewModel @Inject constructor(
     }
 
     fun deleteFavorite(movieDetail: MovieDetail, showToast: () -> Unit) {
-        val movieEntity =
-            MovieEntity(movieDetail.id, movieDetail.originalTitle, movieDetail.backdropPath)
+
         viewModelScope.launch {
-            deleteFavoriteMovieUseCase.invoke(movieEntity).collectAndHandle(
+            deleteFavoriteMovieUseCase.invoke(movieDetail.toMovieEntity()).collectAndHandle(
                 scope = this,
                 onSuccess = {
                     checkIsFavorite(movieDetail.id)

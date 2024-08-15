@@ -29,7 +29,12 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel<HomeUiState>() {
     override fun createInitialState(): HomeUiState = HomeUiState()
 
+
     init {
+        init()
+    }
+
+    fun init(){
         getPopularMovies()
         getMovies()
     }

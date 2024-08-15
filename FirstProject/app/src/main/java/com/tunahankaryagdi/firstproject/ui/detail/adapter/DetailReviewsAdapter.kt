@@ -31,11 +31,11 @@ class DetailReviewsAdapter() :
     override fun onBindViewHolder(holder: DetailReviewsViewHolder, position: Int) {
         val review = reviews[position]
         with(holder.binding) {
-            tvReviewItemRate.text = review.authorDetails.rating.toString()
+            tvReviewItemRate.text = review.authorDetails?.rating.toString()
             tvReviewItemContent.text = review.content
-            tvReviewItemAuthorUsername.text = review.authorDetails.username
-            if (review.authorDetails.avatarPath == null) ivReviewItemAuthorImage.setImageResource(R.drawable.ic_default_user)
-            else ivReviewItemAuthorImage.load(review.authorDetails.avatarPath.getImageUrlFromPath())
+            tvReviewItemAuthorUsername.text = review.authorDetails?.username
+            if (review.authorDetails?.avatarPath == null) ivReviewItemAuthorImage.setImageResource(R.drawable.ic_default_user)
+            else ivReviewItemAuthorImage.load(review.authorDetails?.avatarPath.getImageUrlFromPath())
         }
     }
 

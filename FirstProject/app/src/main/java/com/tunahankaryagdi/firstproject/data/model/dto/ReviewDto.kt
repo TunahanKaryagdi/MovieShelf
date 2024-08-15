@@ -5,25 +5,25 @@ import com.tunahankaryagdi.firstproject.domain.model.Author
 import com.tunahankaryagdi.firstproject.domain.model.Review
 
 data class ReviewDto(
-    val author: String,
+    val author: String?,
     @SerializedName("author_details")
     val authorDetails: AuthorDto,
-    val content: String,
+    val content: String?,
     @SerializedName("created_at")
-    val createdAt: String,
+    val createdAt: String?,
     val id: String,
     @SerializedName("updated_at")
-    val updatedAt: String,
-    val url: String
+    val updatedAt: String?,
+    val url: String?
 )
 
 
 data class AuthorDto(
     @SerializedName("avatar_path")
     val avatarPath: String?,
-    val name: String,
-    val rating: Int,
-    val username: String
+    val name: String?,
+    val rating: Int?,
+    val username: String?
 )
 
 fun ReviewDto.toReview(): Review {

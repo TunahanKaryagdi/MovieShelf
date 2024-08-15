@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tunahankaryagdi.firstproject.data.model.entity.MovieEntity
 import com.tunahankaryagdi.firstproject.data.model.entity.toMovie
 import com.tunahankaryagdi.firstproject.domain.model.Movie
+import com.tunahankaryagdi.firstproject.domain.model.toMovieEntity
 import com.tunahankaryagdi.firstproject.domain.use_case.DeleteFavoriteMovieUseCase
 import com.tunahankaryagdi.firstproject.domain.use_case.GetFavoriteMoviesUseCase
 import com.tunahankaryagdi.firstproject.ui.base.BaseUiState
@@ -32,10 +33,9 @@ class FavoriteViewModel @Inject constructor(
     }
 
     fun deleteFavoriteMovie(movie: Movie, showToast: () -> Unit) {
-        val movieEntity =
-            MovieEntity(movie.id, movie.title, movie.backdropPath)
+
         viewModelScope.launch {
-            deleteFavoriteMovieUseCase.invoke(movieEntity).collectAndHandle(
+            deleteFavoriteMovieUseCase.invoke(movie.toMovieEntity()).collectAndHandle(
                 this,
                 onSuccess = {
                     getFavoriteMovies()
@@ -48,7 +48,7 @@ class FavoriteViewModel @Inject constructor(
     fun filterMovies(searchText: String) {
         val state = getCurrentState()
         val filteredMovies = state.movies.filter {
-            it.title.contains(searchText, ignoreCase = true)
+            it.title?.contains(searchText, ignoreCase = true) ?: return
         }
         setState(getCurrentState().copy(filteredMovies = filteredMovies))
 

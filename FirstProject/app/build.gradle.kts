@@ -99,6 +99,9 @@ dependencies {
     //Paging
     implementation(libs.androidx.paging.runtime.ktx)
 
+    //Refresh layout
+    implementation(libs.androidx.swiperefreshlayout)
+
 
 
 

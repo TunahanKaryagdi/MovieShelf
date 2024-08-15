@@ -116,6 +116,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             })
 
+            srlRefreshLayout.setOnRefreshListener {
+                viewModel.init()
+                srlRefreshLayout.isRefreshing = false
+            }
+
         }
     }
 

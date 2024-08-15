@@ -107,12 +107,13 @@ class DetailFragment : BaseFragment<FragmentDetailBinding, DetailViewModel>() {
 
     private fun setUiElements(movieDetail: MovieDetail) {
         with(binding) {
-            tvType.text = movieDetail.genres[0].name
+            tvType.text = movieDetail.genres?.get(0)?.name ?: getString(R.string.default_name)
             tvDuration.text = getString(R.string.minutes, movieDetail.runtime.toString())
             tvMovieTitle.text = movieDetail.originalTitle
             tvYear.text = movieDetail.releaseDate
             tvAboutMovie.text = movieDetail.overview
-            tvMovieRate.text = movieDetail.voteAverage.toFormattedString()
+            tvMovieRate.text = movieDetail.voteAverage?.toFormattedString() ?:getString(R.string.default_name)
+            tvDuration.text = getString(R.string.minutes, movieDetail.runtime.toString())
             ivPoster.loadImage(movieDetail.posterPath?.getImageUrlFromPath())
             ivMovieDetail.loadImage(movieDetail.backdropPath?.getImageUrlFromPath())
             ivSave.setOnClickListener {

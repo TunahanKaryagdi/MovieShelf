@@ -7,28 +7,28 @@ import com.tunahankaryagdi.firstproject.domain.model.MovieDetail
 
 data class MovieDetailDto(
     val id: Int,
-    val adult: Boolean,
+    val adult: Boolean?,
     @SerializedName("backdrop_path")
     val backdropPath: String?,
     @SerializedName("belongs_to_collection")
     val collectionInfo: CollectionInfoDto?,
     @SerializedName("original_title")
-    val originalTitle: String,
-    val overview: String,
+    val originalTitle: String?,
+    val overview: String?,
     @SerializedName("poster_path")
     val posterPath: String?,
     @SerializedName("release_date")
-    val releaseDate: String,
+    val releaseDate: String?,
     @SerializedName("vote_average")
-    val voteAverage: Double,
-    val genres: List<GenreDto>,
-    val runtime: Int
+    val voteAverage: Double?,
+    val genres: List<GenreDto>?,
+    val runtime: Int?
 )
 
 
 data class CollectionInfoDto(
     val id: Int,
-    val name: String,
+    val name: String?,
     @SerializedName("poster_path")
     val posterPath: String?,
     @SerializedName("backdrop_path")
@@ -37,7 +37,7 @@ data class CollectionInfoDto(
 
 data class GenreDto(
     val id: Int,
-    val name: String
+    val name: String?
 )
 
 
@@ -53,7 +53,7 @@ fun MovieDetailDto.toMovieDetail(): MovieDetail {
         voteAverage = voteAverage,
         runtime = runtime,
         collectionInfo = collectionInfo?.toCollectionInfo(),
-        genres = genres.map { it.toGenre() },
+        genres = genres?.map { it.toGenre() },
     )
 }
 
