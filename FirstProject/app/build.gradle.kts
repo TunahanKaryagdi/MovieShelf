@@ -29,8 +29,19 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val myCustomValue: String = localProperties.getProperty("API_KEY") ?: "Default api key"
-        buildConfigField("String", "API_KEY", myCustomValue)
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { inputStream ->
+                localProperties.load(inputStream)
+            }
+        }
+
+        val myApiKey: String = localProperties.getProperty("API_KEY") ?: "Default api key"
+        val myBaseUrl: String = localProperties.getProperty("BASE_URL") ?: "Default base url"
+
+        buildConfigField("String", "API_KEY", "\"$myApiKey\"")
+        buildConfigField("String", "BASE_URL", "\"$myBaseUrl\"")
     }
 
     buildTypes {

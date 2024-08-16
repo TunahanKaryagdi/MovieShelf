@@ -12,6 +12,7 @@ import com.tunahankaryagdi.firstproject.domain.model.Movie
 import com.tunahankaryagdi.firstproject.domain.model.SearchMovie
 import com.tunahankaryagdi.firstproject.utils.ext.getImageUrlFromPath
 import com.tunahankaryagdi.firstproject.utils.ext.loadImage
+import com.tunahankaryagdi.firstproject.utils.ext.toFormattedString
 
 class SearchMovieListAdapter(
     val onClickMovie: (Int) -> Unit
@@ -35,7 +36,7 @@ class SearchMovieListAdapter(
             tvSearchItemDate.text = movie.releaseDate
             if (movie.adult == true) tvSearchItemAdult.setText(R.string.adult_content) else tvSearchItemAdult.setText(R.string.all_ages)
             tvSearchItemPopularity.text = holder.itemView.context.getString(R.string.popularity,movie.popularity)
-            tvSearchItemRank.text = movie.voteAverage.toString()
+            tvSearchItemRank.text = movie.voteAverage?.toFormattedString() ?: holder.itemView.context.getString(R.string.default_double)
             llSearchMovieItem.setOnClickListener {
                 onClickMovie(movie.id)
             }

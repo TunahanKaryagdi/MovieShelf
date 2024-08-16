@@ -15,6 +15,6 @@ data class Review(
 data class Author(
     val avatarPath: String?,
     val name: String?,
-    val rating: Int?,
+    val rating: Double?,
     val username: String?
 )

@@ -24,8 +24,7 @@ class HomeViewModel @Inject constructor(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
     private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
-    private val getMoviesBySearchUseCase: GetMoviesBySearchUseCase
+    private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
 ) : BaseViewModel<HomeUiState>() {
     override fun createInitialState(): HomeUiState = HomeUiState()
 
@@ -96,13 +95,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getMoviesBySearch(searchText: String) {
-        viewModelScope.launch {
-            getMoviesBySearchUseCase.invoke(searchText).cachedIn(viewModelScope).collectLatest { pagingData ->
-                setState(getCurrentState().copy(searchMovies = pagingData))
-            }
-        }
-    }
 }
 
 

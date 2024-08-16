@@ -2,6 +2,7 @@ package com.tunahankaryagdi.firstproject.di
 
 import android.content.Context
 import androidx.room.Room
+import com.tunahankaryagdi.firstproject.BuildConfig
 import com.tunahankaryagdi.firstproject.data.source.local.AppDatabase
 import com.tunahankaryagdi.firstproject.data.source.local.MovieDao
 import com.tunahankaryagdi.firstproject.data.source.remote.interceptor.HeaderInterceptor
@@ -30,7 +31,7 @@ object NetworkModule {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit
             .Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

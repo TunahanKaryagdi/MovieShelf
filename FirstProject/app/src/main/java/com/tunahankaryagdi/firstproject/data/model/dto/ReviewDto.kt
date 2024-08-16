@@ -22,9 +22,16 @@ data class AuthorDto(
     @SerializedName("avatar_path")
     val avatarPath: String?,
     val name: String?,
-    val rating: Int?,
+    val rating: Any?,
     val username: String?
-)
+){
+    val numberAsDouble: Double?
+        get() = when (rating) {
+            is Int -> rating.toDouble()
+            is Double -> rating
+            else -> null
+        }
+}
 
 fun ReviewDto.toReview(): Review {
     return Review(
@@ -41,7 +48,7 @@ fun ReviewDto.toReview(): Review {
 
 fun AuthorDto.toAuthor(): Author {
     return Author(
-        rating = rating,
+        rating = numberAsDouble,
         name = name,
         avatarPath = avatarPath,
         username = username

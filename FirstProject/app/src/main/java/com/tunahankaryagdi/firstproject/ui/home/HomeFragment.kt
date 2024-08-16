@@ -34,9 +34,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override val viewModel: HomeViewModel by viewModels()
     private lateinit var homeMovieListAdapter: HomeMovieListAdapter
     private lateinit var homePopularMoviesAdapter: HomePopularMoviesAdapter
-    private lateinit var searchMovieListAdapter: SearchMovieListAdapter
 
     private val handler = Handler(Looper.getMainLooper())
+    private val slideTime = 5000L
 
     override fun inflateBinding(
         layoutInflater: LayoutInflater,
@@ -50,7 +50,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         homePopularMoviesAdapter =
             HomePopularMoviesAdapter(onClickPopularMovie = ::navigateToDetail)
 
-        searchMovieListAdapter = SearchMovieListAdapter(onClickMovie = ::navigateToDetail)
+
         with(binding.vpPopularMovies) {
             adapter = homePopularMoviesAdapter
             offscreenPageLimit = 3
@@ -61,7 +61,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         with(binding) {
             rvMovies.adapter = homeMovieListAdapter
             rvMovies.setHasFixedSize(false)
-            rvHomeSearch.adapter = searchMovieListAdapter
             HomeTab.entries.forEach { homeTab ->
                 binding.tlHomeTabs.addTab(binding.tlHomeTabs.newTab().setText(homeTab.resId))
             }
@@ -76,32 +75,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
 
-            searchMovieListAdapter.addLoadStateListener { loadStates ->
-                val refreshState = loadStates.refresh
-                with(binding) {
-                    if (refreshState is LoadState.NotLoading && searchMovieListAdapter.itemCount == 0) {
-                        rvHomeSearch.visibility = View.GONE
-                        llHomeEmptyResult.visibility = View.VISIBLE
-                    } else {
-                        rvHomeSearch.visibility = View.VISIBLE
-                        llHomeEmptyResult.visibility = View.GONE
-                    }
+            etHomeText.setOnFocusChangeListener { _, hasFocus->
+                if (hasFocus){
+                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToHomeSearchFragment())
                 }
-            }
-            etHomeSearchText.addTextChangedListener { text ->
-
-                if (text.toString().isBlank()) {
-                    if (etHomeSearchText.hasFocus()) {
-                        rvHomeSearch.visibility = View.GONE
-                        clHomeSearchLayout.visibility = View.GONE
-                    }
-                    llHomeDefaultLayout.visibility = View.VISIBLE
-                    clHomeSearchLayout.visibility = View.GONE
-                } else {
-                    llHomeDefaultLayout.visibility = View.GONE
-                    clHomeSearchLayout.visibility = View.VISIBLE
-                }
-                viewModel.getMoviesBySearch(text.toString())
             }
 
             ivOptions.setOnClickListener {
@@ -112,7 +89,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     handler.removeCallbacks(sliderRunnable)
-                    handler.postDelayed(sliderRunnable, 3000)
+                    handler.postDelayed(sliderRunnable, slideTime)
                 }
             })
 
@@ -144,15 +121,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 homeMovieListAdapter.submitData(state.movies)
-
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collectLatest { state ->
-                searchMovieListAdapter.submitData(state.searchMovies)
-            }
-        }
     }
 
 
